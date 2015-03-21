@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:300px;
+    width:100px;
+    float:left;
+    padding:5px;	      
+}
+#activeSection {
+    width:350px;
+    float:left;
+    padding:10px;	 	 
+}
+#footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+   padding:5px;	 	 
+}
+</style>
+<script src="{{url_for('static',filename = 'jquery-1.11.2.min.js')}}"></script>
+<script src="{{url_for('static',filename = 'func.js')}}"></script>
+</head>
+<body>
+ 
+<div id="nav">
+	<a id = "addNewWordSectionNav">Add new word</a><br>
+	<a id = "listAllWordSectionNav">List all word</a><br>
+	<a id = "wordQuizNav">Word Quiz</a><br>
+</div>
+
+
+
+<div id="activeSection">
+	aaa 
+</div>
+
+</body>
+</html>

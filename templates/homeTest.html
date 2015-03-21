@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #header {
+                background-color:black;
+                color:white;
+                text-align:center;
+                padding:5px;
+            }
+            #nav {
+                line-height:30px;
+                background-color:#eeeeee;
+                height:300px;
+                width:100px;
+                float:left;
+                padding:5px;          
+            }
+            #activeSection {
+                width:350px;
+                float:left;
+                padding:10px;        
+            }
+            #footer {
+                background-color:black;
+                color:white;
+                clear:both;
+                text-align:center;
+               padding:5px;      
+            }
+        </style>
+        <script type="application/javascript" src="{{url_for('static',filename='test.js')}}"></script>
+    </head>
+
+    <body>
+        <div id="nav">
+            <a onclick = "changeActiveSection('addNewWordSection')" onmousemove = "mouseIn(this)" onmouseout = "mouseOut(this)">Add new word</a><br>
+            <a onclick = "changeActiveSection('ListAllWordSection')" onmousemove = "mouseIn(this)" onmouseout = "mouseOut(this)">List all word</a><br>
+        </div>
+
+        <div id="activeSection">
+            aaa 
+        </div>
+
+        <div id="addNewWordSection" hidden>
+            word : <input type="text" id="wordText"><br><br>
+            reading : <input type="text" id="readingText"><br><br>
+            meaning : <textarea type="text" id="meaningText" rows="4" cols="50"></textarea><br>
+            source : <div id = "sourceRadioGroup"></div><input type="button" onclick = "newSource()" value="Add Source"><br>
+            sentence : <input type="text" id="sentenceText"><br><br>
+            page : <input type="text" id="pageText"><br><br>
+            <input type="button" onclick = "submitWord()" value="submit">
+        </div>
+        <div id="ListAllWordSection" hidden>
+            <input type="text" id="searchWordText"><input type="button" onclick = "searchWord()" value="Search Word">
+            <table id = "wordsTable" style="width:50%"></table>
+        </div>
+    </body>
+</html>

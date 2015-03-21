@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function setCookie(cname, cvalue, expiredSecond) 
+{
+    var d = new Date();
+    d.setTime(d.getTime() + (expiredSecond*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) 
+{
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+
+function login()
+{
+	if (window.XMLHttpRequest)
+		// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+  
+	else
+		// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==201)
+		{
+			var jsonResponse = JSON.parse(xmlhttp.responseText);
+			document.getElementById("myDiv").innerHTML = jsonResponse.status;
+			if(jsonResponse.status=="success")
+			{
+				var serialNum = jsonResponse.serialNum;
+				var identifier = jsonResponse.identifier;
+				var username = document.getElementById("usernameText").value;
+				setCookie("username",username,3600);
+				setCookie("serialNum",serialNum,3600);
+				setCookie("identifier",identifier,3600);
+				document.location.href = "http://220.135.188.70:5000/home";
+			}
+			
+		}
+	}
+	var username = document.getElementById("usernameText").value;
+	var password = document.getElementById("passwordText").value;
+	var parameters = JSON.stringify({"username":username,"password":password});
+	xmlhttp.open("POST","{{url_for('login')}}",true);
+	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	xmlhttp.send(parameters);
+}
+function register()
+{
+	if (window.XMLHttpRequest)
+		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
+	else
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==201)
+		{
+			var jsonResponse = JSON.parse(xmlhttp.responseText);
+			document.getElementById("myDiv").innerHTML = jsonResponse.status;
+		}
+	}
+	var username = document.getElementById("usernameText").value;
+	var password = document.getElementById("passwordText").value;
+	var parameters = JSON.stringify({"username":username,"password":password});
+	xmlhttp.open("POST","{{url_for('register')}}",true);
+	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	xmlhttp.send(parameters);
+	
+}
+</script>
+</head>
+<body>
+<h2>Word Quiz beta</h2>
+
+Username: <input type="text" id = "usernameText"><br>
+Password: <input type="text" id = "passwordText"><br><br>
+<input type="button" onclick="login()" value="login">
+<input type="button" onclick="register()" value="register">
+
+<div id="myDiv"></div>
+
+</body>
+</html>
