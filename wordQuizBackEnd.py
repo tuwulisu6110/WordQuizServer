@@ -314,13 +314,6 @@ def loginHttpPage():
 def home():
     return render_template('home.html')
 
-@app.route('/homeTest', methods= {'GET'})
-def homeTest():
-    return render_template('homeTest.html')
-@app.route('/test', methods = {'GET'})
-@crossdomain(origin='*',headers='Content-type')
-def test():
-    return 'hihihihi'
 @app.route('/addNewWordPage', methods = {'GET'})
 def addNewWordPage():
     return render_template('addNewWordPage.html')
@@ -330,10 +323,6 @@ def searchWordPage():
 @app.route('/wordQuizPage', methods = {'GET'})
 def wordQuizPage():
     return render_template('wordQuizPage.html')
-# no need for this method
-#@app.route('/test')
-#def test():
-#    return url_for('static',filename='test.js'),201
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
