@@ -118,7 +118,7 @@ def checkTimeStamp(func):
 
 @app.route('/login',methods = ['POST','OPTIONS'])
 @crossdomain(origin='*',headers='Content-type')
-@checkRequestValid(tagList = ['username'])
+@checkRequestValid(tagList = ['username','password'])
 def login():
     user = query_db('SELECT * FROM account WHERE USERNAME = ?',
                 [request.json['username']], one=True)
@@ -147,7 +147,7 @@ def stringValid(s):
 
 @app.route('/register',methods = ['POST','OPTIONS'])
 @crossdomain(origin='*',headers='Content-type')
-@checkRequestValid(tagList = ['username'])
+@checkRequestValid(tagList = ['username','password'])
 def register():
     if not stringValid(request.json['username']):
         return jsonify({'status':'username invalid'}),202
@@ -230,7 +230,7 @@ def deleteWord():
 @app.route('/addWord',methods = {'POST'})
 @crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = 
-        ['word','reading','meaning','sourceId','page','username'])
+        ['word','reading','meaning','sourceId','page','sentence'])
 @checkTimeStamp
 def addWord():
     wordTableAddr = request.json['username']+"_words"
@@ -248,9 +248,9 @@ def addWord():
 
 
 '''This search interface should accept the search target column, but that's too compelx . So if this function want to refactor pls consider the more general way instead of hard coding'''
-@app.route('/searchWordByWordAndMeaning',methods = {'POST'})
+@app.route('/searchWordByWordAndReaning',methods = {'POST'})
 @crossdomain(origin='*',headers='Content-type')
-@checkRequestValid(tagList = ['username','word'])
+@checkRequestValid(tagList = ['word'])
 @checkTimeStamp
 def searchWord():
     wordTableName = request.json['username']+'_words'
