@@ -248,7 +248,7 @@ def addWord():
 
 
 '''This search interface should accept the search target column, but that's too compelx . So if this function want to refactor pls consider the more general way instead of hard coding'''
-@app.route('/searchWordByWordAndReaning',methods = {'POST'})
+@app.route('/searchWordByWordAndReading',methods = {'POST'})
 @crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['word'])
 @checkTimeStamp

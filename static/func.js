@@ -124,7 +124,7 @@ function searchWord()
 		}
 	}
 	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,"identifier":identifier,"word":searchWord});
-	xmlhttp.open("POST","searchWordByWordAndReaning",true);
+	xmlhttp.open("POST","searchWordByWordAndReading",true);
 	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 	xmlhttp.send(parameters);
 	
