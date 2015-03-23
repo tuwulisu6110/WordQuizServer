@@ -211,6 +211,7 @@ function recordResult(wordId,result)
     });
 }
 var c=0;
+var answerId;
 function generateQuiz(num)
 {
 	var username = getCookie("username");
@@ -228,7 +229,7 @@ function generateQuiz(num)
 				if(response.status=='success')
 				{
 					$('#quizType').text('Reading');
-					var answerId = Math.floor((Math.random() * num));
+					answerId = Math.floor((Math.random() * num));
 					//alert(response.words[0].word);
 					$('#question').text(response.words[answerId].word);
 					$('#answer'+answerId.toString()).text(response.words[answerId].reading);
@@ -239,7 +240,7 @@ function generateQuiz(num)
 						recordResult(response.words[answerId].id,1);//1 for right
 						c++;
 					});
-					alert(c);
+					//alert(c);
 					for(var i=0;i<num;i++)
 						if(i!=answerId)
 						{
