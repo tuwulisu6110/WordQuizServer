@@ -17,8 +17,14 @@ function getCheckedSourceId()
 		if(radioButtons[i].checked)
 			return radioButtons[i].value;
 }
+function checkCookieExpired()
+{
+	if(getCookie("username")=="")
+		document.location.href = "http://220.135.188.70:5000/loginLobby";
+}
 function submitWord()
 {
+	
 	var username = getCookie("username");
 	var serialNum = getCookie("serialNum");
 	var identifier = getCookie("identifier");
@@ -210,7 +216,6 @@ function recordResult(wordId,result)
 			}
     });
 }
-var c=0;
 var answerId;
 function generateQuiz(num)
 {
@@ -292,6 +297,7 @@ $(document).ready(function(){
 	$('#wordQuizNav').mouseenter(function(){mouseIn($(this));});
 	$('#addNewWordSectionNav').click(function()
 	{
+		checkCookieExpired();
 		$.get('addNewWordPage',function(response,status)
 		{
 			if(status!='success')
@@ -306,6 +312,7 @@ $(document).ready(function(){
 	});
 	$('#listAllWordSectionNav').click(function()
 	{
+		checkCookieExpired();
 		$.get('searchWordPage',function(response,status)
 		{
 			if(status!='success')
@@ -321,6 +328,7 @@ $(document).ready(function(){
 	});
 	$('#wordQuizNav').click(function()
 	{
+		checkCookieExpired();
 		$.get('wordQuizPage',function(response,status)
 		{
 			if(status!='success')
