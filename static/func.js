@@ -34,6 +34,11 @@ function submitWord()
 	var sourceId = getCheckedSourceId();
 	var sentence = document.getElementById("sentenceText").value;
 	var page = document.getElementById("pageText").value;
+	if(word=="")
+	{
+		alert("word can't be empty");
+		return;
+	}
 	if (window.XMLHttpRequest)
 		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
 	else
@@ -217,12 +222,27 @@ function recordResult(wordId,result)
     });
 }
 var answerId;
-function generateQuiz(num)
+
+function generateQuiz(num,quizType)
 {
 	var username = getCookie("username");
 	var serialNum = getCookie("serialNum");
 	var identifier = getCookie("identifier");
 	var parameter = {'num':num,"username":username,"serialNum":serialNum,"identifier":identifier}
+	var title;
+	var questionTitleTag, answerTag;
+	if(quizType==1)//reading quiz
+	{
+		title = 'Spell Question';
+		questionTitleTag = 'word';
+		answerTag = 'reading';
+	}
+	else if(quizType == 2)//meaning quiz
+	{
+		title = 'Meaning Question';
+		questionTitleTag = 'meaning';
+		answerTag = 'word';
+	}
 	$.ajax(
 	{
     type : "POST",
@@ -233,11 +253,11 @@ function generateQuiz(num)
 			{
 				if(response.status=='success')
 				{
-					$('#quizType').text('Reading');
+					$('#quizType').text(title);
 					answerId = Math.floor((Math.random() * num));
 					//alert(response.words[0].word);
-					$('#question').text(response.words[answerId].word);
-					$('#answer'+answerId.toString()).text(response.words[answerId].reading);
+					$('#question').text(response.words[answerId][questionTitleTag]);
+					$('#answer'+answerId.toString()).text(response.words[answerId][answerTag]);
 					$('#answer'+answerId.toString()).click(function()
 					{
 						$('#result').html('right');
@@ -249,7 +269,7 @@ function generateQuiz(num)
 					for(var i=0;i<num;i++)
 						if(i!=answerId)
 						{
-							$('#answer'+i.toString()).text(response.words[i].reading);
+							$('#answer'+i.toString()).text(response.words[i][answerTag]);
 							$('#answer'+i.toString()).click(function()
 							{
 								$('#result').html('wrong');
@@ -293,8 +313,10 @@ $(document).ready(function(){
 	$('#addNewWordSectionNav').mouseleave(function(){mouseOut($(this));});
 	$('#listAllWordSectionNav').mouseenter(function(){mouseIn($(this));});
 	$('#listAllWordSectionNav').mouseleave(function(){mouseOut($(this));});
-	$('#wordQuizNav').mouseleave(function(){mouseOut($(this));});
-	$('#wordQuizNav').mouseenter(function(){mouseIn($(this));});
+	$('#readingQuizNav').mouseleave(function(){mouseOut($(this));});
+	$('#readingQuizNav').mouseenter(function(){mouseIn($(this));});
+	$('#meaningQuizNav').mouseleave(function(){mouseOut($(this));});
+	$('#meaningQuizNav').mouseenter(function(){mouseIn($(this));});
 	$('#addNewWordSectionNav').click(function()
 	{
 		checkCookieExpired();
@@ -326,7 +348,7 @@ $(document).ready(function(){
 		});
 		
 	});
-	$('#wordQuizNav').click(function()
+	$('#readingQuizNav').click(function()
 	{
 		checkCookieExpired();
 		$.get('wordQuizPage',function(response,status)
@@ -336,7 +358,28 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-				generateQuiz(4);
+				generateQuiz(4,1);//1 for reading quiz
+				$('#next').click(function()
+				{
+					$('button').css('color','black');
+					$('#result').html('');
+					generateQuiz(4);
+				});
+			}
+			
+		});
+	});
+	$('#meaningQuizNav').click(function()
+	{
+		checkCookieExpired();
+		$.get('wordQuizPage',function(response,status)
+		{
+			if(status!='success')
+				alert('request for wordQuizPage failed');
+			else
+			{
+				$('#activeSection').html(response);
+				generateQuiz(4,2);//2 for meaning quiz
 				$('#next').click(function()
 				{
 					$('button').css('color','black');
