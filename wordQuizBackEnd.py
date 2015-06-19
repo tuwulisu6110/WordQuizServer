@@ -4,6 +4,7 @@ from flask import request
 from flask import make_response
 from flask import jsonify
 from flask import abort
+import urllib2
 import sqlite3
 from cors import crossdomain
 from random import randint
@@ -52,7 +53,7 @@ def createRamdomString(length=10):
     return rString
 def getSourceNameTable(sourceTableName):
     sourceNameRows = query_db('select * from '+sourceTableName)
-    sourceNameTable = {'-1':''}
+    sourceNameTable = {-1:''}
     '''this is for the condition that no sourceName in some words'''
     if sourceNameRows is not None:
         for snRow in sourceNameRows:
@@ -212,7 +213,6 @@ def listSource():
     return jsonify(r),201
 
 @app.route('/deleteWord',methods = {'POST'})
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['wordId'])
 @checkTimeStamp
 def deleteWord():
@@ -305,6 +305,48 @@ def recordAnswerResult():
             ' set pick = pick+1 '+ correctStr +
             ' where id = ?',[request.json['wordId']])
     return jsonify({'status':'success'}),201
+
+def eliminateNonWordChar(str):
+    nonWordList=['・']
+    for nonWord in nonWordList:
+        str = str.replace(nonWord,'')
+    return str
+MozillaFakeHeader = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                     'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+                     'Accept-Encoding': 'none',
+                     'Accept-Language': 'en-US,en;q=0.8',
+                     'Connection': 'keep-alive'}
+gooURLFront = "http://dictionary.goo.ne.jp/srch/all/"
+gooURLTail = "/m0u/"
+right ='】'
+left ='【'
+
+@app.route('/listAllReadingByWord',methods = ['POST'])
+@checkRequestValid(tagList = ['word'])
+@checkTimeStamp
+def listReadingByWord():
+    readingList = []
+    word = request.json['word']
+    wordEnd = '【'+word+'】'
+    wordBegin = '"title search-ttl-a"'
+    cursor = 0
+    req = urllib2.Request(gooURLFront+word+gooURLTail, headers=MozillaFakeHeader)
+    page = urllib2.urlopen(req).read()
+    while(cursor!=-1):
+        posBegin = page.find(wordBegin,cursor)
+        if posBegin==-1:
+            break
+        posEnd = page.find(wordEnd,posBegin)
+        posBegin = posBegin+len(wordBegin)+1
+        reading = eliminateNonWordChar(page[posBegin:posEnd])
+        if reading not in readingList:
+            readingList.append(reading)
+        cursor=posEnd
+    return jsonify({'status':'success','readingList':readingList}),201
+
+
+'''above is server model, following is webpage'''
 
 @app.route('/loginLobby',methods = {'GET'})
 def loginHttpPage():

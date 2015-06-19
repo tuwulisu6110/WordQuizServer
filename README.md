@@ -39,6 +39,12 @@ The following lists HTTP POST request(server model) description:
         required json request tags :["username","serialNum", "identifier"] and ["wordId","result"]
         return json {"status":string}
     "result" is an integer for that 1 is correct, 0 is incorrect. Then accumulate to database.
+10. path : "/listAllReadingByWord":
+        required json request tags :["username","serialNum","identifier"] and ["word"]
+        return json {"status":string,"readingList":jsonArray}
+        readingList is a reading list from network dictionary goo. 
+
+
 
 
 The following lists HTTP GET request(web page view) description:

@@ -22,69 +22,38 @@ function checkCookieExpired()
 	if(getCookie("username")=="")
 		document.location.href = "http://220.135.188.70:5000/loginLobby";
 }
-function submitWord()
-{
-	
+function prepareSessionData()
+{ 
 	var username = getCookie("username");
 	var serialNum = getCookie("serialNum");
 	var identifier = getCookie("identifier");
-	var word = document.getElementById("wordText").value;
-	var reading = document.getElementById("readingText").value;
-	var meaning = document.getElementById("meaningText").value;
-	var sourceId = getCheckedSourceId();
-	var sentence = document.getElementById("sentenceText").value;
-	var page = document.getElementById("pageText").value;
-	if(word=="")
-	{
-		alert("word can't be empty");
-		return;
-	}
-	if (window.XMLHttpRequest)
-		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
-	else
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
-	xmlhttp.onreadystatechange=function()
-	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==201)
-		{
-			var jsonResponse = JSON.parse(xmlhttp.responseText);
-			if(jsonResponse.status=="success")
-			{
-				document.getElementById("wordText").value = "";
-				document.getElementById("readingText").value = "";
-				document.getElementById("meaningText").value = "";
-				document.getElementById("sentenceText").value = "";
-				document.getElementById("pageText").value = "";
-			}
-		}
-	}
-	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,
-									"identifier":identifier,"word":word,
-									"reading":reading,"meaning":meaning,
-									"sourceId":sourceId,"page":page,"sentence":sentence});
-	xmlhttp.open("POST","addWord",true);
-	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	xmlhttp.send(parameters);
-	
+    return {"username":username,"serialNum":serialNum,"identifier":identifier};
+
+}
+function getAllReadingByWord(word)
+{
+    if(word==undefined||word=="")
+    {
+        alert('Can\'t reslove empty word');
+        return;
+    }
+
 }
 function deleteWord(wordId,rowId)
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	var parameter = {"wordId" : wordId ,"username":username,"serialNum":serialNum,"identifier":identifier};
+    var parameters = prepareSessionData();
+    parameters.wordId=wordId;
 	$.ajax(
 	{
     type : "POST",
     url : "deleteWord",
-    data: JSON.stringify(parameter),
+    data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
 		{
 			if(response.status=='success')
 			{
-				var wordsTable = document.getElementById("wordsTable");
-				wordsTable.deleteRow(rowId);
+                searchWord($('#searchWordText').val());                    
 			}
 			else
 				alert(response.status);
@@ -115,100 +84,92 @@ function refreshWordsTable(wordsTable,jsonResponse)
 		}
 	}
 }
-function searchWord()
+
+function fulfillWordTableWithAllWords()
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	var searchWord = document.getElementById("searchWordText").value;
-	if (window.XMLHttpRequest)
-		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
-	else
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
-	xmlhttp.onreadystatechange=function()
+    searchWord("");
+}
+
+function searchWord(targetWord)
+{
+    var parameters = prepareSessionData();
+	parameters.word=targetWord;
+	$.ajax(
 	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==201)
-		{
-			var wordsTable = document.getElementById("wordsTable");
-			var jsonResponse = JSON.parse(xmlhttp.responseText);
-			refreshWordsTable(wordsTable,jsonResponse);
-		}
-	}
-	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,"identifier":identifier,"word":searchWord});
-	xmlhttp.open("POST","searchWordByWordAndReading",true);
-	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	xmlhttp.send(parameters);
-	
+    type : "POST",
+    url : "searchWordByWordAndReading",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+			        var wordsTable = document.getElementById("wordsTable");
+			        refreshWordsTable(wordsTable,response);
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
 }
 function newSource()
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	var sourceName = prompt("Please enter source name:","");
-	if (window.XMLHttpRequest)
-		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
-	else
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
-	xmlhttp.onreadystatechange=function()
+
+    var parameters = prepareSessionData();
+    var sourceName = prompt("Please enter source name:","");	
+	parameters.source = sourceName;
+	$.ajax(
 	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==201)
-		{
-			var jsonResponse = JSON.parse(xmlhttp.responseText);
-			if(jsonResponse.status=="success")
-			{
-				refreshRadioGroup();
-			}
-		}
-	}
-	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,"identifier":identifier,"source":sourceName});
-	xmlhttp.open("POST","addSource",true);
-	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	xmlhttp.send(parameters);
-	
+    type : "POST",
+    url : "addSource",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+				    refreshRadioGroup();
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
 }
 function refreshRadioGroup()
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	if (window.XMLHttpRequest)
-		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
-	else
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
-	xmlhttp.onreadystatechange=function()
+    var parameters = prepareSessionData();
+	$.ajax(
 	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==201)
-		{
-			var jsonResponse = JSON.parse(xmlhttp.responseText);
-			if(jsonResponse.status=="success")
-			{
-				var radioGroup = document.getElementById("sourceRadioGroup");
-				var sources = jsonResponse.sources;
-				var radioString = "<input type='radio' name='sources' value='-1'>None";
-				for(var key in sources)
-					radioString += "<input type='radio' name='sources' value=" + key + ">" + sources[key];
-				radioGroup.innerHTML = radioString;
-			}
-		}
-	}
-	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,"identifier":identifier});
-	xmlhttp.open("POST","listSource",true);
-	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	xmlhttp.send(parameters);
-	
+    type : "POST",
+    url : "listSource",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+				    var radioGroup = document.getElementById("sourceRadioGroup");
+				    var sources = response.sources;
+				    var radioString = "<input type='radio' name='sources' value='-1'>None";
+				    for(var key in sources)
+					    radioString += "<input type='radio' name='sources' value=" + key + ">" + sources[key];
+				    radioGroup.innerHTML = radioString;
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
 }
 function recordResult(wordId,result)
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	var parameter = {'wordId':wordId,'result':result,"username":username,"serialNum":serialNum,"identifier":identifier}
+    var parameters = prepareSessionData();
+	parameters.result=result;
+    parameters.wordId=wordId;
 	$.ajax(
 	{
     type : "POST",
     url : "recordAnswerResult",
-    data: JSON.stringify(parameter),
+    data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
 			{
@@ -225,10 +186,8 @@ var answerId;
 
 function generateQuiz(num,quizType)
 {
-	var username = getCookie("username");
-	var serialNum = getCookie("serialNum");
-	var identifier = getCookie("identifier");
-	var parameter = {'num':num,"username":username,"serialNum":serialNum,"identifier":identifier}
+    var parameters = prepareSessionData();
+	parameters.num=num;
 	var title;
 	var questionTitleTag, answerTag;
 	if(quizType==1)//reading quiz
@@ -247,7 +206,7 @@ function generateQuiz(num,quizType)
 	{
     type : "POST",
     url : "randomWord",
-    data: JSON.stringify(parameter),
+    data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
 			{
@@ -342,8 +301,8 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-				searchWord();
-			}
+			    fulfillWordTableWithAllWords();
+            }
 			
 		});
 		
@@ -363,7 +322,7 @@ $(document).ready(function(){
 				{
 					$('button').css('color','black');
 					$('#result').html('');
-					generateQuiz(4);
+					generateQuiz(4,1);
 				});
 			}
 			
@@ -384,7 +343,7 @@ $(document).ready(function(){
 				{
 					$('button').css('color','black');
 					$('#result').html('');
-					generateQuiz(4);
+					generateQuiz(4,2);
 				});
 			}
 			
