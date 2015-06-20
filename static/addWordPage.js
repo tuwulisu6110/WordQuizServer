@@ -33,6 +33,7 @@ function submitWord()
 				document.getElementById("sentenceText").value = "";
 				document.getElementById("pageText").value = "";
 			}
+            $('#readingSelection').hide();
 		}
 	}
 	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,
@@ -44,3 +45,50 @@ function submitWord()
 	xmlhttp.send(parameters);
 	
 }
+
+function listAllReadingByWord(word)
+{
+    var parameters = prepareSessionData();
+    parameters.word=word;
+	$.ajax(
+	{
+    type : "POST",
+    url : "listAllReadingByWord",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+                    if(response.readingList!=undefined)
+                    {
+                        var readingList = response.readingList;
+                        $('#readingSelection option').remove();
+                        $('#readingSelection').append('<option value="">select reading</option>');
+                        for (var key in response.readingList)
+                        {
+                            $('#readingSelection').append('<option value="'+readingList[key]+'">'+readingList[key]+'</option>');
+                        }    
+                        
+                        $('#readingSelection').show();
+                            
+                    }
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
+}
+
+$(document).ready(function(){
+    $('#listReadingButton').click(function()
+    {
+        listAllReadingByWord($('#wordText').val());
+    });
+    $('#readingSelection').on('change',function()
+    {
+        var reading = $('#readingSelection').find(':selected').val();
+        $('#readingText').val(reading);
+    });
+    $('#readingSelection').hide();
+});

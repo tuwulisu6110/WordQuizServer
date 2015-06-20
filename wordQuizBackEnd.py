@@ -327,22 +327,23 @@ left ='【'
 @checkTimeStamp
 def listReadingByWord():
     readingList = []
-    word = request.json['word']
-    wordEnd = '【'+word+'】'
+    word = request.json['word'].encode('utf-8')
+    wordEnd = left+word+right
     wordBegin = '"title search-ttl-a"'
     cursor = 0
     req = urllib2.Request(gooURLFront+word+gooURLTail, headers=MozillaFakeHeader)
     page = urllib2.urlopen(req).read()
     while(cursor!=-1):
-        posBegin = page.find(wordBegin,cursor)
-        if posBegin==-1:
+        posEnd = page.find(wordEnd,cursor)
+        if posEnd==-1:
             break
-        posEnd = page.find(wordEnd,posBegin)
+        posBegin = page.find(wordBegin,posEnd-50)
         posBegin = posBegin+len(wordBegin)+1
-        reading = eliminateNonWordChar(page[posBegin:posEnd])
-        if reading not in readingList:
-            readingList.append(reading)
-        cursor=posEnd
+        if posEnd>posBegin:
+            reading = eliminateNonWordChar(page[posBegin:posEnd])
+            if reading not in readingList:
+                readingList.append(reading)
+        cursor=posEnd+len(wordEnd)+1
     return jsonify({'status':'success','readingList':readingList}),201
 
 

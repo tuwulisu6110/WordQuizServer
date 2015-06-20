@@ -1,2 +1,5 @@
 flaskenv/
 *.pyc
+*.vim
+*.vim!
+test.py
