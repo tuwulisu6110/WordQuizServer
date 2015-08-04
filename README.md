@@ -1,7 +1,8 @@
 # WordQuizServer
 This program is based on Python flask and sqlite. Python flask is used as an interface about sqlite manipulation. And sqlite help us to store accounts and japanese words information. 
 wordQuizBackEnd.py is the mainly file of whole program. This file have two parts: one is server interface which is ready to receive HTTP POST request for data manupulation, the other one is a sort of HTTP GET port for web page request as view for user. And there is anthor view made by Android, if you have interest in that here is the link: https://github.com/tuwulisu6110/JPWordQuiz
-And you can test the webpage : http://220.135.188.70:5000/loginLobby
+And you can test the webpage : http://220.135.188.70:5000/loginLobby 
+The test account : test///123
 ```
 The following lists HTTP POST request(server model) description:
 1. path : "/login": 
