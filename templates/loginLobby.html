@@ -82,19 +82,23 @@
             
         }
     </script>
+    <link href="{{ url_for('static',filename = 'loginLobby.css') }}" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
 </head>
 
 <body>
-    <h2>Word Quiz beta</h2>
-    
-    <form>
-        Username: <input type="text" id = "usernameText"><br>
-        Password: <input type="password" id = "passwordText"><br><br>
-        <input type="button" onclick="login()" value="login">
-        <input type="button" onclick="register()" value="register">
-    </form>
+    <div class='form-login'>
+        <h2>Word Quiz beta</h2>
+        
+        <form>
+            <input type="text" id = "usernameText" class="form-control"  placeholder='username'>
+            <input type="password" id = "passwordText" class="form-control"  placeholder='password'><br>
+            <input type="button" onclick="login()" value="login" class="btn btn-lg btn-primary btn-block" >
+            <input type="button" onclick="register()" value="register" class="btn btn-lg btn-primary btn-block">
+        </form>
 
-    <div id="myDiv"></div>
+        <div id="myDiv"></div>
+    </div>
 
 </body>
 </html>
