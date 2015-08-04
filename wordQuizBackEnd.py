@@ -317,10 +317,14 @@ MozillaFakeHeader = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/
                      'Accept-Encoding': 'none',
                      'Accept-Language': 'en-US,en;q=0.8',
                      'Connection': 'keep-alive'}
-gooURLFront = "http://dictionary.goo.ne.jp/srch/all/"
+gooURLFront = "http://dictionary.goo.ne.jp/srch/"
+gooURLMiddleAll = "all/"
+gooURLMiddleJn2 = "jn2/"
 gooURLTail = "/m0u/"
 right ='】'
 left ='【'
+singleResultPage = 1
+multipleResultPage = 2
 
 @app.route('/listAllReadingByWord',methods = ['POST'])
 @checkRequestValid(tagList = ['word'])
@@ -331,7 +335,7 @@ def listReadingByWord():
     wordEnd = left+word+right
     wordBegin = '"title search-ttl-a"'
     cursor = 0
-    req = urllib2.Request(gooURLFront+word+gooURLTail, headers=MozillaFakeHeader)
+    req = urllib2.Request(gooURLFront+gooURLMiddleAll+word+gooURLTail, headers=MozillaFakeHeader)
     page = urllib2.urlopen(req).read()
     while(cursor!=-1):
         posEnd = page.find(wordEnd,cursor)
@@ -346,6 +350,80 @@ def listReadingByWord():
         cursor=posEnd+len(wordEnd)+1
     return jsonify({'status':'success','readingList':readingList}),201
 
+@app.route('/listAllMeaningByWord',methods = ['POST'])
+@checkRequestValid(tagList = ['word'])
+@checkTimeStamp
+def listMeaningByWord():
+    meaningList = []
+    word = request.json['word'].encode('utf-8')
+    req = urllib2.Request(gooURLFront+gooURLMiddleJn2+word+gooURLTail, headers=MozillaFakeHeader)
+    page = urllib2.urlopen(req).read()
+    pageType = determinePageType(page)
+    if pageType == singleResultPage:
+        meaningList = parseSingleResultPage(page)
+    elif pageType == multipleResultPage:
+        meaningList = parseMultipleResultPage(page,word)
+    return jsonify({'status':'success','meaningList':meaningList}),201
+
+multipleResultPageKeyword = '国語辞書の検索結果'
+def determinePageType(page):
+    result = page.find(multipleResultPageKeyword)
+    if result == -1:
+        return singleResultPage
+    else:
+        return multipleResultPage
+
+def parseSingleResultPage(page):
+    cursor = 0
+    targetPrevBegin = 'in-ttl-b text-indent'
+    targetBegin = '</strong>'
+    targetEnd = '</li>'
+    noiseBegin = '<ul class="list-data-b-in">'
+    meaningList = []
+    while cursor != -1:
+        cursor = page.find(targetPrevBegin,cursor)
+        if cursor == -1:
+            break
+        posBegin = page.find(targetBegin,cursor)+len(targetBegin)
+        if posBegin-cursor > 100:
+            cursor = cursor + len(targetPrevBegin)
+            continue
+        posEnd = page.find(targetEnd,posBegin)
+        rawMeaning = page[posBegin:posEnd]
+        noisePos = rawMeaning.find(noiseBegin)
+        if noisePos != -1:
+            meaning = rawMeaning[:noisePos]
+        else:
+            meaning = rawMeaning
+        cursor = posEnd
+        meaningList.append(meaning)
+    return meaningList
+
+def parseMultipleResultPage(page,word):
+    meaningList = []
+    targetBegin = 'class="title search-ttl-a">'
+    hrefKeywordBegin = 'href="'
+    hrefKeywordEnd = '">'
+    cursor = 0
+    url=''
+    while cursor != -1:
+        cursor = page.find(targetBegin,cursor)
+        if cursor == -1:
+            break
+        wordBeginPos = page.find(left,cursor) + len(left)
+        wordEndPos = page.find(right,wordBeginPos)
+        if word == page[wordBeginPos:wordEndPos]:
+            startSearchPos = cursor-175
+            urlPosBegin = page.find(hrefKeywordBegin,startSearchPos)+len(hrefKeywordBegin)
+            urlPosEnd = page.find(hrefKeywordEnd,urlPosBegin)
+            urlTail = page[urlPosBegin:urlPosEnd]
+            url='http://dictionary.goo.ne.jp'+urlTail
+            break
+        cursor = wordEndPos
+    
+    req = urllib2.Request(url, headers=MozillaFakeHeader)
+    concretePage = urllib2.urlopen(req).read()
+    return parseSingleResultPage(concretePage)
 
 '''above is server model, following is webpage'''
 

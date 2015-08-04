@@ -43,6 +43,11 @@ The following lists HTTP POST request(server model) description:
         required json request tags :["username","serialNum","identifier"] and ["word"]
         return json {"status":string,"readingList":jsonArray}
         readingList is a reading list from network dictionary goo. 
+11. path : "/listAllMeaningByWord":
+        required json request tags :["username","serialNum","identifier"] and ["word"]
+        return json {"status":string,"meaningList":jsonArray}
+        meaningList is a meaning list from network dictionary goo. 
+        
 
 
 

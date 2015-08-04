@@ -194,7 +194,7 @@ function generateQuiz(num,quizType)
 	{
 		title = 'Spell Question';
 		questionTitleTag = 'word';
-		answerTag = 'reading';
+		answerTag = 'kanJiReading';
 	}
 	else if(quizType == 2)//meaning quiz
 	{

@@ -46,6 +46,33 @@ function submitWord()
 	
 }
 
+function refreshSelection(response,selectionType)
+{    
+    if(response.status=='success')
+    {
+        var selectionName = selectionType + 'Selection';
+        var selector = '#' + selectionName;
+        var listName = selectionType + 'List';
+        var list = response[listName];
+        if(list!=undefined)
+        {
+            $( selector+' option').remove();
+            $( selector ).append('<option value="">select '+selectionType+'</option>');
+            for(var i=0;i<list.length;i++)
+            {
+                $(selector).append('<option value="'+list[i]+'">'+list[i]+'</option>');
+            }
+            
+            $(selector).show();
+                
+        }
+        else
+            alert(selectionType + 'List'+' not exist in response');
+    }
+    else
+        alert(response.status);
+}
+
 function listAllReadingByWord(word)
 {
     var parameters = prepareSessionData();
@@ -56,7 +83,11 @@ function listAllReadingByWord(word)
     url : "listAllReadingByWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
-    success: function(response) 
+    success: function(response)
+             {
+                refreshSelection(response,'reading');
+             }
+        /*function(response) 
 		     {
 			    if(response.status=='success')
 			    {
@@ -65,10 +96,10 @@ function listAllReadingByWord(word)
                         var readingList = response.readingList;
                         $('#readingSelection option').remove();
                         $('#readingSelection').append('<option value="">select reading</option>');
-                        for (var key in response.readingList)
+                        for(var i=0;i<readingList.length;i++)
                         {
-                            $('#readingSelection').append('<option value="'+readingList[key]+'">'+readingList[key]+'</option>');
-                        }    
+                            $('#readingSelection').append('<option value="'+readingList[i]+'">'+readingList[i]+'</option>');
+                        }
                         
                         $('#readingSelection').show();
                             
@@ -76,6 +107,24 @@ function listAllReadingByWord(word)
 			    }
 			    else
 				    alert(response.status);
+		     }*/
+    });
+}
+
+
+function listAllMeaningByWord(word)
+{
+    var parameters = prepareSessionData();
+    parameters.word=word;
+	$.ajax(
+	{
+    type : "POST",
+    url : "listAllMeaningByWord",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+                 refreshSelection(response,'meaning');
 		     }
     });
 }
@@ -85,10 +134,20 @@ $(document).ready(function(){
     {
         listAllReadingByWord($('#wordText').val());
     });
+    $('#listMeaningButton').click(function()
+    {
+        listAllMeaningByWord($('#wordText').val());
+    });
     $('#readingSelection').on('change',function()
     {
         var reading = $('#readingSelection').find(':selected').val();
         $('#readingText').val(reading);
     });
+    $('#meaningSelection').on('change',function()
+    {
+        var meaning = $('#meaningSelection').find(':selected').val();
+        $('#meaningText').val(meaning);
+    });
     $('#readingSelection').hide();
+    $('#meaningSelection').hide();
 });

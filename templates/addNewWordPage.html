@@ -1,8 +1,8 @@
 
-    <script src="{{url_for('static',filename = 'addWordPage.js')}}"></script>
+    <script src="{{url_for('static',filename = 'addNewWordPage.js')}}"></script>
     word : <input type="text" id="wordText"><br><br>
     reading : <input type="text" id="readingText"><input type="button" id="listReadingButton"  value="list reading"><select id="readingSelection"></select><br><br>
-	meaning : <br><textarea type="text" id="meaningText" rows="4" cols="50"></textarea><br>
+    meaning : <br><textarea type="text" id="meaningText" rows="4" cols="50"></textarea><input type="button" id="listMeaningButton" value="list Meaning"><select id="meaningSelection"></select><br>
 	source : <div id = "sourceRadioGroup"></div><input type="button" onclick = "newSource()" value="Add Source"><br>
 	sentence : <input type="text" id="sentenceText"><br><br>
 	page : <input type="text" id="pageText"><br><br>
