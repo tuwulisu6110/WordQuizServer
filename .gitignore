@@ -3,3 +3,5 @@ flaskenv/
 *.vim
 *.vim!
 test.py
+*.swo
+*.swp
