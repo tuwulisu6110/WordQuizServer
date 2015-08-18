@@ -33,6 +33,10 @@ function submitWord()
 				document.getElementById("sentenceText").value = "";
 				document.getElementById("pageText").value = "";
 			}
+            else
+            {
+                alert(jsonResponse.status);
+            }
             $('#readingSelection').hide();
 		}
 	}

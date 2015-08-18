@@ -11,6 +11,7 @@ from random import randint
 import time
 from functools import wraps
 from flask import url_for, redirect, render_template
+import os
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -117,6 +118,8 @@ def checkTimeStamp(func):
             return func()
     return func_checkTimeStamp
 
+
+
 @app.route('/login',methods = ['POST','OPTIONS'])
 @crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['username','password'])
@@ -145,6 +148,10 @@ def stringValid(s):
            	return False
     else:
         return True
+
+@app.route('/favicon.ico')
+def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/register',methods = ['POST','OPTIONS'])
 @crossdomain(origin='*',headers='Content-type')
