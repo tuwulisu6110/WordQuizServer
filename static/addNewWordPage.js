@@ -1,4 +1,52 @@
 
+function newSource()
+{
+
+    var parameters = prepareSessionData();
+    var sourceName = prompt("Please enter source name:","");	
+	parameters.source = sourceName;
+	$.ajax(
+	{
+    type : "POST",
+    url : "addSource",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+				    refreshRadioGroup();
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
+}
+function refreshRadioGroup()
+{
+    var parameters = prepareSessionData();
+	$.ajax(
+	{
+    type : "POST",
+    url : "listSource",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+				    var radioGroup = document.getElementById("sourceRadioGroup");
+				    var sources = response.sources;
+				    var radioString = "<input type='radio' name='sources' value='-1'>None";
+				    for(var key in sources)
+					    radioString += "<input type='radio' name='sources' value=" + key + ">" + sources[key];
+				    radioGroup.innerHTML = radioString;
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
+}
 function submitWord()
 {
 	
