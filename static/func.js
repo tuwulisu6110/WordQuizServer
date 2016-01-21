@@ -104,7 +104,7 @@ function searchWord(targetWord)
 		     {
 			    if(response.status=='success')
 			    {
-			        var wordsTable = document.getElementById("wordsTable");
+			        var wordsTable = document.getElementById("wordsTable").getElementsByTagName('tbody')[0];
 			        refreshWordsTable(wordsTable,response);
 			    }
 			    else

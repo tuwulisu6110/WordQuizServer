@@ -1,8 +1,24 @@
-<style>
+<!--<style>
 table, th, td {
     border: 1px solid black;
 	word-wrap:break-word;
 }
-</style>
+</style>-->
 	<input type="text" id="searchWordText"><input type="button" onclick = "searchWord($('#searchWordText').val())" value="Search Word">
-	<table id = "wordsTable" style="width:100%" ></table>
+	<table id = "wordsTable" class="table" >
+        <thead>
+            <tr>
+                <th>word</th>
+                <th>reading</th>
+                <th>meaning</th>
+                <th>source</th>
+                <th>sentence</th>
+                <th>accuracy</th>
+                <th>pick</th>
+                <th>correct</th>
+                <th>delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
