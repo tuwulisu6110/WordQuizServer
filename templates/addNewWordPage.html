@@ -1,9 +1,72 @@
-
+<style>
+.content 
+{
+    display:table-cell;
+    vertical-align:middle;
+    padding: 0px 0px 0px 0px;
+}
+.grid_center
+{
+    margin: 0 auto;
+    display:table-cell;
+}
+.rowpadding
+{
+    padding: 5px 0px 5px 0px; 
+}
+</style>
 <script src="{{url_for('static',filename = 'addNewWordPage.js')}}"></script>
-    word : <input type="text" id="wordText"><br><br>
-    reading : <input type="text" id="readingText"><input type="button" id="listReadingButton"  value="list reading"><select id="readingSelection"></select><br><br>
-    meaning : <br><textarea type="text" id="meaningText" rows="4" cols="50"></textarea><input type="button" id="listMeaningButton" value="list Meaning"><select id="meaningSelection"></select><br>
-	source : <div id = "sourceRadioGroup"></div><input type="button" onclick = "newSource()" value="Add Source"><br>
-	sentence : <input type="text" id="sentenceText"><br><br>
-	page : <input type="text" id="pageText"><br><br>
+<div class="container">
+    <div class="row rowpadding" > 
+        <div class="col-md-2">
+            <input type="text" id="wordText" class="form-control 
+            grid_center" placeholder="word">   
+        </div>
+    </div>
+    <div class="row rowpadding"> 
+        <div class = "col-md-2">
+            <input type="text" id="readingText" class="form-control
+            grid_center" placeholder="reading">
+        </div>
+        <div class= "col-md-1">
+            <input type="button" id="listReadingButton"  
+            value="list reading" class="grid_center btn">
+        </div>
+        <div class= "col-md-1">
+            <select id="readingSelection" class="grid_center"></select>
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <textarea class="form-control grid_center" type="text" 
+            id="meaningText" rows="4" cols="50" placeholder="meaning"/>
+        </div>
+        <div class="col-md-1">
+            <input class="grid_center btn" type="button" 
+            id="listMeaningButton" value="list Meaning">
+        </div>
+        <div class="col-md-1">
+            <select class="grid_center" id="meaningSelection"></select>
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div id="sourceRadioGroup" class="col-md-2"/> 
+        <div class="col-md-1">
+            <input type="button" onclick="newSource()" value="Add Source"
+            class = "btn grid_center">
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <input type="text" id="sentenceText" 
+            class="form-control grid_center" placeholder="sentence">
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <input type="text" id="pageText" 
+            class="form-control grid_center" placeholder="page">
+        </div>
+    </div>
+</div>
 <input type="button" onclick = "submitWord()" value="submit">
