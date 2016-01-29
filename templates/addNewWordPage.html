@@ -16,7 +16,7 @@
 }
 </style>
 <script src="{{url_for('static',filename = 'addNewWordPage.js')}}"></script>
-<div class="container">
+<div class="container-fluid">
     <div class="row rowpadding" > 
         <div class="col-md-2">
             <input type="text" id="wordText" class="form-control 
@@ -68,5 +68,9 @@
             class="form-control grid_center" placeholder="page">
         </div>
     </div>
+    <div class="row rowpadding">
+        <div class="col-md-1">
+            <input type="button" onclick = "submitWord()" class="btn grid-center" value="submit">
+        </div>
+    </div>
 </div>
-<input type="button" onclick = "submitWord()" value="submit">
