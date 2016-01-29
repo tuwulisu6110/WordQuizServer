@@ -63,6 +63,8 @@ $(document).ready(function(){
 	$('#readingQuizNav').mouseenter(function(){mouseIn($(this));});
 	$('#meaningQuizNav').mouseleave(function(){mouseOut($(this));});
 	$('#meaningQuizNav').mouseenter(function(){mouseIn($(this));});
+	$('#logoutNav').mouseleave(function(){mouseOut($(this));});
+	$('#logoutNav').mouseenter(function(){mouseIn($(this));});
 	$('#addNewWordSectionNav').click(function()
 	{
 		checkCookieExpired();
@@ -117,8 +119,8 @@ $(document).ready(function(){
 	});
 	$('#meaningQuizNav').click(function()
 	{
-		checkCookieExpired();
-		$.get('wordQuizPage',function(response,status)
+		checkCookieExpired();	
+        $.get('wordQuizPage',function(response,status)
 		{
 			if(status!='success')
 				alert('request for wordQuizPage failed');
@@ -135,6 +137,27 @@ $(document).ready(function(){
 			}
 			
 		});
+	});
+	$('#logoutNav').click(function()
+	{
+		checkCookieExpired();
+        var parameters = prepareSessionData();
+        $.ajax(
+            {
+                type:'POST',
+                url:'logout',
+                data:JSON.stringify(parameters),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(response)
+                        {
+                            if(reasponse.status=='success')
+                                document.location.href = "http://220.135.188.70:5000/loginLobby";
+                            else
+                                alert(response.status);
+                        }
+            }    
+            
+        );
 	});
 	
 });

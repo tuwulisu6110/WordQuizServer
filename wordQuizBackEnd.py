@@ -6,7 +6,6 @@ from flask import jsonify
 from flask import abort
 import urllib2
 import sqlite3
-from cors import crossdomain
 from random import randint
 import time
 from functools import wraps
@@ -121,7 +120,6 @@ def checkTimeStamp(func):
 
 
 @app.route('/login',methods = ['POST','OPTIONS'])
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['username','password'])
 def login():
     user = query_db('SELECT * FROM account WHERE USERNAME = ?',
@@ -141,6 +139,16 @@ def login():
         r['identifier'] = rString
     return jsonify( r ),201
 
+@app.route('/logout',methods = ['POST','OPTIONS'])
+@checkRequestValid(tagList=['serialNum','identifier'])
+def logout():
+    serialNum = request.json['serialNum']
+    identifier = request.json['identifier']
+    commit_db('delete from cookies where id = ? and rString = ?',
+            [serialNum,identifier])
+    r={'status':"success"}
+    return jsonify(r),201
+
 def stringValid(s):
     for c in s:
         if not((ord(c) > 64 and ord(c) < 91) or (ord(c) > 96 and ord(c) < 123)or
@@ -154,7 +162,6 @@ def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/register',methods = ['POST','OPTIONS'])
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['username','password'])
 def register():
     if not stringValid(request.json['username']):
@@ -195,7 +202,6 @@ def register():
     return jsonify(r),201
 
 @app.route('/addSource',methods = {'POST'})
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['username','source'])
 @checkTimeStamp
 def addSource():
@@ -206,7 +212,6 @@ def addSource():
         return jsonify({'status':'success','lastId':id}),201
 
 @app.route('/listSource',methods = {'POST'})
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['username'])
 @checkTimeStamp
 def listSource():	
@@ -235,7 +240,6 @@ def deleteWord():
             str(request.json['wordId'])}),199
 
 @app.route('/addWord',methods = {'POST'})
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = 
         ['word','reading','meaning','sourceId','page','sentence'])
 @checkTimeStamp
@@ -256,7 +260,6 @@ def addWord():
 
 '''This search interface should accept the search target column, but that's too compelx . So if this function want to refactor pls consider the more general way instead of hard coding'''
 @app.route('/searchWordByWordAndReading',methods = {'POST'})
-@crossdomain(origin='*',headers='Content-type')
 @checkRequestValid(tagList = ['word'])
 @checkTimeStamp
 def searchWord():
