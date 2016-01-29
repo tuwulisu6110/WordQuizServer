@@ -108,13 +108,13 @@ function refreshSelection(response,selectionType)
         var list = response[listName];
         if(list!=undefined)
         {
-            $( selector+' option').remove();
-            $( selector ).append('<option value="">select '+selectionType+'</option>');
+            $( selector+' ul').remove();
+            $( selector ).append('<ul class="dropdown-menu">');
             for(var i=0;i<list.length;i++)
             {
-                $(selector).append('<option value="'+list[i]+'">'+list[i]+'</option>');
+                $(selector+' ul').append('<li><a>'+list[i]+'</a></li>');
             }
-            
+            $( selector ).append('</ul>');
             $(selector).show();
                 
         }
@@ -190,14 +190,14 @@ $(document).ready(function(){
     {
         listAllMeaningByWord($('#wordText').val());
     });
-    $('#readingSelection').on('change',function()
+    $('#readingSelection').on('click','ul li a',function()
     {
-        var reading = $('#readingSelection').find(':selected').val();
+        var reading = $(this).text();
         $('#readingText').val(reading);
     });
-    $('#meaningSelection').on('change',function()
+    $('#meaningSelection').on('click','ul li a',function()
     {
-        var meaning = $('#meaningSelection').find(':selected').val();
+        var meaning = $(this).text();
         $('#meaningText').val(meaning);
     });
     $('#readingSelection').hide();
