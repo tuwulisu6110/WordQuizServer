@@ -12,7 +12,11 @@
 }
 .rowpadding
 {
-    padding: 5px 0px 5px 0px; 
+    padding: 5px 2px 5px 2px; 
+}
+.radio label
+{
+    padding-right: 5px;
 }
 </style>
 <script src="{{url_for('static',filename = 'addNewWordPage.js')}}"></script>
@@ -55,7 +59,7 @@
         </div>
     </div>
     <div class="row rowpadding">
-        <div id="sourceRadioGroup" class="col-md-2"/> 
+        <div id="sourceRadioGroup" class="col-md-2 radio"/> 
         <div class="col-md-1">
             <input type="button" onclick="newSource()" value="Add Source"
             class = "btn grid_center">

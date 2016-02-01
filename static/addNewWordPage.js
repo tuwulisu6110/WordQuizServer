@@ -37,9 +37,10 @@ function refreshRadioGroup()
 			    {
 				    var radioGroup = document.getElementById("sourceRadioGroup");
 				    var sources = response.sources;
-				    var radioString = "<input type='radio' name='sources' value='-1'>None";
+				    var radioString = "<label><input type='radio' name='sources' value='-1'>None</label>";
 				    for(var key in sources)
-					    radioString += "<input type='radio' name='sources' value=" + key + ">" + sources[key];
+					    radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
+                                        + sources[key] + "</label>";
 				    radioGroup.innerHTML = radioString;
 			    }
 			    else
