@@ -20,7 +20,10 @@ function getCheckedSourceId()
 function checkCookieExpired()
 {
 	if(getCookie("username")=="")
+    {
 		document.location.href = "http://220.135.188.70:5000/loginLobby";
+        return false;
+    }
 }
 function prepareSessionData()
 { 
@@ -67,7 +70,8 @@ $(document).ready(function(){
 	$('#logoutNav').mouseenter(function(){mouseIn($(this));});
 	$('#addNewWordSectionNav').click(function()
 	{
-		checkCookieExpired();
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
 		$.get('addNewWordPage',function(response,status)
 		{
 			if(status!='success')
@@ -82,7 +86,8 @@ $(document).ready(function(){
 	});
 	$('#listAllWordSectionNav').click(function()
 	{
-		checkCookieExpired();
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
 		$.get('searchWordPage',function(response,status)
 		{
 			if(status!='success')
@@ -98,7 +103,8 @@ $(document).ready(function(){
 	});
 	$('#readingQuizNav').click(function()
 	{
-		checkCookieExpired();
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
 		$.get('wordQuizPage',function(response,status)
 		{
 			if(status!='success')
@@ -119,7 +125,8 @@ $(document).ready(function(){
 	});
 	$('#meaningQuizNav').click(function()
 	{
-		checkCookieExpired();	
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
         $.get('wordQuizPage',function(response,status)
 		{
 			if(status!='success')
@@ -140,7 +147,8 @@ $(document).ready(function(){
 	});
 	$('#logoutNav').click(function()
 	{
-		checkCookieExpired();
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
         var parameters = prepareSessionData();
         $.ajax(
             {
