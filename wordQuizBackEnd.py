@@ -335,6 +335,7 @@ right ='】'
 left ='【'
 singleResultPage = 1
 multipleResultPage = 2
+notFoundPage=3
 
 @app.route('/listAllReadingByWord',methods = ['POST'])
 @checkRequestValid(tagList = ['word'])
@@ -358,6 +359,8 @@ def listReadingByWord():
             if reading not in readingList:
                 readingList.append(reading)
         cursor=posEnd+len(wordEnd)+1
+    if readingList == []:
+        readingList = ['Not found']
     return jsonify({'status':'success','readingList':readingList}),201
 
 @app.route('/listAllMeaningByWord',methods = ['POST'])
@@ -373,10 +376,16 @@ def listMeaningByWord():
         meaningList = parseSingleResultPage(page)
     elif pageType == multipleResultPage:
         meaningList = parseMultipleResultPage(page,word)
+    elif pageType == notFoundPage:
+        meaningList = ['Not found']
+        
     return jsonify({'status':'success','meaningList':meaningList}),201
 
 multipleResultPageKeyword = '国語辞書の検索結果'
+NotFoundPageKeyword = '一致する情報は見つかりませんでした'
 def determinePageType(page):
+    if page.find(NotFoundPageKeyword) != -1:
+        return notFoundPage
     result = page.find(multipleResultPageKeyword)
     if result == -1:
         return singleResultPage

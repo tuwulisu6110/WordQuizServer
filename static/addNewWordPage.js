@@ -113,7 +113,7 @@ function refreshSelection(response,selectionType)
             $( selector ).append('<ul class="dropdown-menu">');
             for(var i=0;i<list.length;i++)
             {
-                $(selector+' ul').append('<li><a>'+list[i]+'</a></li>');
+                $(selector+' ul').append('<li><a href=#>'+list[i]+'</a></li>');
             }
             $( selector ).append('</ul>');
             $(selector).show();
