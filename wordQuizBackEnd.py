@@ -429,7 +429,7 @@ def getTagText(xml,tagBegin,tagEnd):
 def parseSingleResultPage(page):
     cursor = 0
     targetPrevBegin = '<div class="explanation">'
-    targetBegin = '<li class="in-ttl-b text-indent">'
+    targetBegin = '<li class="in-ttl-b'
     targetEnd = '</li>'
     exitKeyword = '<!--/explanation-->'
     meaningList = []
@@ -448,6 +448,9 @@ def parseSingleResultPage(page):
             break
         meaning = filterNoiseBlock(rawMeaning,'<strong>','</strong>')
         meaning = filterNoiseBlock(meaning,'<','>')
+        meaning = filterNoiseBlock(meaning,'text','">')
+        if meaning[:2]=='">':
+            meaning = meaning[2:]
         meaningList.append(meaning)
         cursor = posBegin
     return meaningList
@@ -463,20 +466,24 @@ def parseMultipleResultPage(page,word):
         cursor = page.find(targetBegin,cursor)
         if cursor == -1:
             break
-        wordBeginPos = page.find(left,cursor) + len(left)
+        wordBeginPos = page.find(left,cursor)
         wordEndPos = page.find(right,wordBeginPos)
-        if word == page[wordBeginPos:wordEndPos]:
+        if wordBeginPos == -1 or wordEndPos == -1:
+            break
+        if word == page[wordBeginPos+len(left):wordEndPos]:
             startSearchPos = cursor-175
             urlPosBegin = page.find(hrefKeywordBegin,startSearchPos)+len(hrefKeywordBegin)
             urlPosEnd = page.find(hrefKeywordEnd,urlPosBegin)
+            if urlPosBegin == -1 or urlPosEnd == -1:
+                return meaningList
             urlTail = page[urlPosBegin:urlPosEnd]
             url='http://dictionary.goo.ne.jp'+urlTail
-            break
+            req = urllib2.Request(url, headers=MozillaFakeHeader)
+            concretePage = urllib2.urlopen(req).read()
+            meaningList+=parseSingleResultPage(concretePage)
         cursor = wordEndPos
     
-    req = urllib2.Request(url, headers=MozillaFakeHeader)
-    concretePage = urllib2.urlopen(req).read()
-    return parseSingleResultPage(concretePage)
+    return meaningList
 
 '''above is server model, following is webpage'''
 
