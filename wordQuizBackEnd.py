@@ -329,7 +329,7 @@ MozillaFakeHeader = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/
                      'Connection': 'keep-alive'}
 gooURLFront = "http://dictionary.goo.ne.jp/srch/"
 gooURLMiddleAll = "all/"
-gooURLMiddleJn2 = "jn2/"
+gooURLMiddleJn2 = "jn/"
 gooURLTail = "/m0u/"
 right ='】'
 left ='【'
@@ -383,30 +383,64 @@ def determinePageType(page):
     else:
         return multipleResultPage
 
+def filterNoiseBlock(sentence,left,right):
+    cursor = sentence.find(left,0)
+    while cursor != -1:
+        begin = cursor
+        end = sentence.find(right,begin)+len(right)
+        if end!=-1:
+            sentence = sentence.replace(sentence[begin:end],"")
+        cursor = sentence.find(left,0)
+    return sentence
+
+def getTagText(xml,tagBegin,tagEnd):
+    t = tagBegin.find(' ',0)
+    if t == -1:
+        pureTag=tagBegin
+    else:
+        pureTag=tagBegin[:t]
+    posBegin = xml.find(tagBegin,0)
+    if posBegin == -1:
+        print 'Cannot find tag : "'+tagBegin+'" in getTagText function'
+        return 'error'
+    pureTagPos = posBegin
+    posEnd = xml.find(tagEnd,posBegin)
+    if posEnd == -1:
+        print 'cannot find tag : "'+tagEnd+'" in getTagText function'
+        return 'error'
+    while True:
+        pureTagPos = xml.find(pureTag,pureTagPos+len(pureTag),posEnd)
+        if pureTagPos == -1:
+            break
+        else:
+            posEnd = xml.find(tagEnd,posEnd+len(tagEnd)) 
+    posBegin=posBegin+len(tagBegin)
+    return xml[posBegin:posEnd]
+
 def parseSingleResultPage(page):
     cursor = 0
-    targetPrevBegin = 'in-ttl-b text-indent'
-    targetBegin = '</strong>'
+    targetPrevBegin = '<div class="explanation">'
+    targetBegin = '<li class="in-ttl-b text-indent">'
     targetEnd = '</li>'
-    noiseBegin = '<ul class="list-data-b-in">'
+    exitKeyword = '<!--/explanation-->'
     meaningList = []
+    beginPosition = page.find(targetPrevBegin,cursor)
+    if beginPosition == 0:
+        return []
+    endPosition = page.find(exitKeyword,beginPosition)
+    page = page[beginPosition:endPosition]
     while cursor != -1:
-        cursor = page.find(targetPrevBegin,cursor)
-        if cursor == -1:
+        posBegin = page.find(targetBegin,cursor)
+        if posBegin == -1:
             break
-        posBegin = page.find(targetBegin,cursor)+len(targetBegin)
-        if posBegin-cursor > 100:
-            cursor = cursor + len(targetPrevBegin)
-            continue
-        posEnd = page.find(targetEnd,posBegin)
-        rawMeaning = page[posBegin:posEnd]
-        noisePos = rawMeaning.find(noiseBegin)
-        if noisePos != -1:
-            meaning = rawMeaning[:noisePos]
-        else:
-            meaning = rawMeaning
-        cursor = posEnd
+        rawMeaning = getTagText(page[posBegin:],targetBegin,targetEnd)
+        posBegin = posBegin + len(rawMeaning)
+        if rawMeaning == 'error':
+            break
+        meaning = filterNoiseBlock(rawMeaning,'<strong>','</strong>')
+        meaning = filterNoiseBlock(meaning,'<','>')
         meaningList.append(meaning)
+        cursor = posBegin
     return meaningList
 
 def parseMultipleResultPage(page,word):
