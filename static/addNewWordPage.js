@@ -1,4 +1,4 @@
-
+var sourceList;
 function newSource()
 {
 
@@ -36,11 +36,12 @@ function refreshRadioGroup()
 			    if(response.status=='success')
 			    {
 				    var radioGroup = document.getElementById("sourceRadioGroup");
-				    var sources = response.sources;
-				    var radioString = "<label><input type='radio' name='sources' value='-1'>None</label>";
+				    sourceList = response.sources;
+                    var sources = sourceList;
+				    var radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
 				    for(var key in sources)
 					    radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
-                                        + sources[key] + "</label>";
+                                        + sources[key] + "</label><br>";
 				    radioGroup.innerHTML = radioString;
 			    }
 			    else
@@ -48,6 +49,15 @@ function refreshRadioGroup()
 		     }
     });
 }
+function getCheckedSourceId()
+{
+	var radioGroup = document.getElementById("sourceRadioGroup");
+	var radioButtons = radioGroup.getElementsByTagName("input");
+	for(var i=0 ; i< radioButtons.length ; i++)
+		if(radioButtons[i].checked)
+			return radioButtons[i].value;
+}
+
 function submitWord()
 {
 	
@@ -140,27 +150,6 @@ function listAllReadingByWord(word)
              {
                 refreshSelection(response,'reading');
              }
-        /*function(response) 
-		     {
-			    if(response.status=='success')
-			    {
-                    if(response.readingList!=undefined)
-                    {
-                        var readingList = response.readingList;
-                        $('#readingSelection option').remove();
-                        $('#readingSelection').append('<option value="">select reading</option>');
-                        for(var i=0;i<readingList.length;i++)
-                        {
-                            $('#readingSelection').append('<option value="'+readingList[i]+'">'+readingList[i]+'</option>');
-                        }
-                        
-                        $('#readingSelection').show();
-                            
-                    }
-			    }
-			    else
-				    alert(response.status);
-		     }*/
     });
 }
 
@@ -182,7 +171,16 @@ function listAllMeaningByWord(word)
     });
 }
 
+function getCheckedSourceText()
+{
+    var checkedId = getCheckedSourceId();
+    if(checkedId==-1)
+        return "None";
+    else
+	    return sourceList[checkedId];
+}
 $(document).ready(function(){
+    refreshRadioGroup();
     $('#listReadingButton').click(function()
     {
         listAllReadingByWord($('#wordText').val());
@@ -203,4 +201,9 @@ $(document).ready(function(){
     });
     $('#readingSelection').hide();
     $('#meaningSelection').hide();
+    $('#setSourceButton').click(function()
+    {
+        var selectedSourceText = getCheckedSourceText();
+        $("#sourceText").val(selectedSourceText); 
+    });
 });

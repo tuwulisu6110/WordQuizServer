@@ -64,7 +64,15 @@
         </div>
     </div>
     <div class="row rowpadding">
-        <div id="sourceRadioGroup" class="col-md-2 radio"/> 
+        <div class="col-md-2">
+            <input type="text" id="sourceText" 
+            class="form-control grid_center" value="Source Name" disabled>
+        </div>
+
+        <div class="col-md-1">
+            <input type="button" value="Select Source" class = "btn grid_center"
+            data-toggle="modal" data-target="#sourceSelectingModal">
+        </div>
         <div class="col-md-1">
             <input type="button" onclick="newSource()" value="Add Source"
             class = "btn grid_center">
@@ -85,6 +93,24 @@
     <div class="row rowpadding">
         <div class="col-md-1">
             <input type="button" onclick = "submitWord()" class="btn grid-center" value="submit">
+        </div>
+    </div>
+    <div class="modal fade" id="sourceSelectingModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Select Source</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="sourceRadioGroup" class="radio"/> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="setSourceButton">
+                        Set Source
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

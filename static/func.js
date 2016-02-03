@@ -9,14 +9,6 @@ function getCookie(cname)
     }
     return "";
 }
-function getCheckedSourceId()
-{
-	var radioGroup = document.getElementById("sourceRadioGroup");
-	var radioButtons = radioGroup.getElementsByTagName("input");
-	for(var i=0 ; i< radioButtons.length ; i++)
-		if(radioButtons[i].checked)
-			return radioButtons[i].value;
-}
 function checkCookieExpired()
 {
 	if(getCookie("username")=="")
@@ -37,10 +29,6 @@ function prepareSessionData()
 function changeActiveSection(caller)
 {
 	document.getElementById("activeSection").innerHTML = document.getElementById(caller).innerHTML;
-	if(caller == 'addNewWordSection')
-		refreshRadioGroup();
-	//if(caller == 'ListAllWordSection')
-		
 }
 function mouseIn(text)
 {
