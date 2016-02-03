@@ -201,8 +201,6 @@ $(document).ready(function(){
         var meaning = $(this).text();
         $('#meaningText').val(meaning);
     });
-    $('#readingSelection').hide();
-    $('#meaningSelection').hide();
     $('#setSourceButton').click(function()
     {
         var selectedSourceText = getCheckedSourceText();
