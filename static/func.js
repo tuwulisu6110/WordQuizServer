@@ -146,7 +146,7 @@ $(document).ready(function(){
                 contentType: 'application/json;charset=UTF-8',
                 success: function(response)
                         {
-                            if(reasponse.status=='success')
+                            if(response.status=='success')
                                 document.location.href = "http://220.135.188.70:5000/loginLobby";
                             else
                                 alert(response.status);

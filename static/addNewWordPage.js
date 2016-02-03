@@ -4,7 +4,9 @@ function newSource()
 
     var parameters = prepareSessionData();
     var sourceName = prompt("Please enter source name:","");	
-	parameters.source = sourceName;
+	if(sourceName==null)
+        return;
+    parameters.source = sourceName;
 	$.ajax(
 	{
     type : "POST",
