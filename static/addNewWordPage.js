@@ -186,11 +186,24 @@ $(document).ready(function(){
     refreshRadioGroup();
     $('#listReadingButton').click(function()
     {
-        listAllReadingByWord($('#wordText').val());
+        var word = $('#wordText').val();
+        if( word == "" || word == null)
+        {    
+            alert("word cannot be empty!!");
+            return;
+        }
+        listAllReadingByWord(word);
     });
     $('#listMeaningButton').click(function()
     {
-        listAllMeaningByWord($('#wordText').val());
+        var word = $('#wordText').val();
+        if( word == "" || word == null)
+        {    
+            alert("word cannot be empty!!");
+            return;
+        }
+
+        listAllMeaningByWord(word);
     });
     $('#readingSelection').on('click','ul li a',function()
     {
