@@ -99,6 +99,7 @@ function submitWord()
                 alert(jsonResponse.status);
             }
             $('#readingSelection').hide();
+            $('#meaningSelection').hide();
 		}
 	}
 	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,
