@@ -227,6 +227,45 @@ def listSource():
     r['status']='success'
     return jsonify(r),201
 
+@app.route('/deleteSource',methods = ['POST'])
+@checkRequestValid(tagList = ['username','sourceId','deleteSourceMode'])
+@checkTimeStamp
+def deleteSource():
+    sourceTableName = request.json['username'] + '_sources'
+    wordTableName = request.json['username'] + '_words'
+    sourceId = request.json['sourceId']
+    deleteSourceMode = request.json['deleteSourceMode']
+    
+    if deleteSourceMode != '0' and deleteSourceMode != '1':
+        print 'error deleteSourceMode = '+deleteSourceMode
+        return jsonify({'status':'error deleteSourceMode = '
+            + deleteSourceMode}),199
+    
+    row = query_db('select * from '+ sourceTableName +' where id = ?'
+            ,[sourceId],one=True)
+    if row is not None:
+        commit_db('delete from '+ sourceTableName + ' where id = ?',
+                [sourceId])
+    else:
+        return jsonify({'status':'cant find source id:'+
+            str(sourceId)}),199
+    rowCount =  query_db('select count(*) from '+ wordTableName + ' where sourceId = ?'
+                                ,[sourceId],one=True)
+    affectedWordNum = str(rowCount['count(*)'])
+    r={'status':'success'}
+    if deleteSourceMode == '0':
+        commit_db('delete from '+ wordTableName + ' where sourceId = ?',
+                [sourceId])
+        r['detail']=affectedWordNum+' words deleted.'
+        return jsonify(r),200
+    elif deleteSourceMode == '1':
+        commit_db('update '+wordTableName + 
+                ' set sourceId = -1 where sourceId = ?',[sourceId])
+        r['detail']=affectedWordNum+' words updated.'
+        return jsonify(r),200
+    
+
+
 @app.route('/deleteWord',methods = {'POST'})
 @checkRequestValid(tagList = ['wordId'])
 @checkTimeStamp
@@ -318,6 +357,9 @@ def recordAnswerResult():
             ' set pick = pick+1 '+ correctStr +
             ' where id = ?',[request.json['wordId']])
     return jsonify({'status':'success'}),201
+
+
+
 
 def eliminateNonWordChar(str):
     nonWordList=['・']
@@ -487,6 +529,8 @@ def parseMultipleResultPage(page,word):
         cursor = wordEndPos
     
     return meaningList
+
+
 
 '''above is server model, following is webpage'''
 

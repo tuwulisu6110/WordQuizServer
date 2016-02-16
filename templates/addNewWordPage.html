@@ -109,8 +109,38 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal" id="setSourceButton">
                         Set Source
                     </button>
+                    <button type="button" class="btn btn-default" id="selectDeleteModeButton">
+                        Delete Source
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="deleteModeSelectingModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Mode</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="deleteModeRadioGroup" class="radio">
+                        <label>
+                            <input type="radio" name="deleteMode" value="0">
+                            Delete all words in this source
+                        </label><br>
+                        <label>
+                            <input type="radio" name="deleteMode" value="1">
+                            Remain all words in this source(set to empty)
+                        </label><br>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="deleteSourceButton">
+                        Delete Source
+                    </button>
+                </div>
+            </div>
+        </div><!--modal-dialog-->
+    </div><!--modali fade-->
 </div>

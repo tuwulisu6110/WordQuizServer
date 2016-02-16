@@ -17,14 +17,38 @@ function newSource()
 		     {
 			    if(response.status=='success')
 			    {
-				    refreshRadioGroup();
+				    refreshSourceRadioGroup();
 			    }
 			    else
 				    alert(response.status);
 		     }
     });
 }
-function refreshRadioGroup()
+function deleteSource(deleteMode,sourceId)
+{
+    var parameters = prepareSessionData();
+    parameters.deleteSourceMode = deleteMode;
+    parameters.sourceId = sourceId;
+	$.ajax(
+	{
+    type : "POST",
+    url : "deleteSource",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+                    refreshSourceRadioGroup();
+				    alert(response.detail);
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
+
+}
+function refreshSourceRadioGroup()
 {
     var parameters = prepareSessionData();
 	$.ajax(
@@ -58,6 +82,7 @@ function getCheckedSourceId()
 	for(var i=0 ; i< radioButtons.length ; i++)
 		if(radioButtons[i].checked)
 			return radioButtons[i].value;
+    return -1;
 }
 
 function submitWord()
@@ -182,8 +207,12 @@ function getCheckedSourceText()
     else
 	    return sourceList[checkedId];
 }
+function getCheckedDeleteMode()
+{
+   return $('#deleteModeRadioGroup input[name=deleteMode]:checked').val(); 
+}
 $(document).ready(function(){
-    refreshRadioGroup();
+    refreshSourceRadioGroup();
     $('#listReadingButton').click(function()
     {
         var word = $('#wordText').val();
@@ -219,5 +248,24 @@ $(document).ready(function(){
     {
         var selectedSourceText = getCheckedSourceText();
         $("#sourceText").val(selectedSourceText); 
+    });
+    $('#selectDeleteModeButton').click(function()
+    {
+        var checkSourceId = getCheckedSourceId();
+        if(checkSourceId==-1)
+        {
+            alert("Should select a valid source.");
+        }
+        else
+        {
+            $('#sourceSelectingModal').modal("hide");
+            $('#deleteModeSelectingModal').modal("show");
+        }   
+    });
+    $('#deleteSourceButton').click(function()
+    {
+        var checkedSourceId = getCheckedSourceId();
+        var deleteMode = getCheckedDeleteMode();
+        deleteSource(deleteMode,checkedSourceId);
     });
 });
