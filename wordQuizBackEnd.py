@@ -304,7 +304,7 @@ def addWord():
 @app.route('/searchWordByWordAndReading',methods = {'POST'})
 @checkRequestValid(tagList = ['word'])
 @checkTimeStamp
-def searchWord():
+def searchWordOld():
     wordTableName = request.json['username']+'_words'
     sourceTableName = request.json['username']+'_sources'
     if not request.json['word']:
@@ -316,6 +316,66 @@ def searchWord():
              ' where word like ? or reading like ?',
              [realCondition,realCondition])
         '''hard coding here'''
+    sourceNameTable = getSourceNameTable(sourceTableName)
+    wordList = []
+    if rows is not None:
+        for row in rows:
+            aWord = generateJsonWord(row,sourceNameTable)
+            wordList.append(aWord)
+    return jsonify({'status':'success','words':wordList}),201
+
+def checkConditionListValid(conditionList):
+    validColume = ['word','reading','sourceId']
+    validConditionType = ['contain','match']
+    mustContainTag = ['colume','target','conditionType']
+    for condition in conditionList:
+        for tag in mustContainTag:
+            if not tag in condition:
+                r = 'condition : '+str(condition)+' lost tag : '+ tag
+                print r
+                return r
+        if not condition['colume'] in validColume:
+            r = 'colume in '+str(condition)+' is not valid. validColume : '+str(validColume)
+            print r
+            return r
+        if not condition['conditionType'] in validConditionType:
+            r = 'conditionType in '+str(condition)+' is not valid. validConditionType : '+str(validConditionType)
+            print r
+            return r
+    return 'valid'
+
+def assembleConditionsToSQL(tableName,conditionList):
+    length = len(conditionList)
+    if length == 0:
+        return ''
+    sql = 'select * from '+ tableName + ' where'
+    for condition in conditionList:
+        if condition['conditionType'] == 'contain':
+            verb = ' like '
+            target = '"%'+condition['target']+'%"'
+        elif condition['conditionType'] == 'match':
+            verb = ' is '
+            target = '"'+condition['target']+'"'
+        sqlToken = ' ' + condition['colume'] + verb + target
+        sql += sqlToken + ' or'
+    sql = sql[:-3]
+    return sql
+
+
+@app.route('/searchWord',methods = {'POST'})
+@checkRequestValid(tagList = ['conditionList'])
+@checkTimeStamp
+def searchWord():
+    wordTableName = request.json['username']+'_words'
+    sourceTableName = request.json['username']+'_sources'
+    conditionList = request.json['conditionList']
+    r = checkConditionListValid(conditionList)
+    if r != 'valid':
+        response = {'status':"error","detail":r}
+        return jsonify(response),199
+    
+    sql = assembleConditionsToSQL(wordTableName,conditionList)
+    rows = query_db(sql)
     sourceNameTable = getSourceNameTable(sourceTableName)
     wordList = []
     if rows is not None:
@@ -551,6 +611,9 @@ def searchWordPage():
 @app.route('/wordQuizPage', methods = {'GET'})
 def wordQuizPage():
     return render_template('wordQuizPage.html')
+@app.route('/listWordPage', methods = {'GET'})
+def listWordPage():
+    return render_template('listWordPage.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

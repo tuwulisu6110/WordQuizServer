@@ -56,7 +56,10 @@ $(document).ready(function(){
 	$('#meaningQuizNav').mouseenter(function(){mouseIn($(this));});
 	$('#logoutNav').mouseleave(function(){mouseOut($(this));});
 	$('#logoutNav').mouseenter(function(){mouseIn($(this));});
-	$('#addNewWordSectionNav').click(function()
+	$('#listWordSectionNav').mouseenter(function(){mouseIn($(this));});
+	$('#listWordSectionNav').mouseleave(function(){mouseOut($(this));});
+	
+    $('#addNewWordSectionNav').click(function()
 	{
 		if(checkCookieExpired()==false)
             alert("Session expired. Return to login page.");
@@ -67,7 +70,7 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-				refreshRadioGroup();
+				refreshRadioGroup();//in addNewWordPage.js
 			}
 		});
 		
@@ -83,7 +86,7 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-			    fulfillWordTableWithAllWords();
+			    fulfillWordTableWithAllWords();//in searchWordPage.js
             }
 			
 		});
@@ -154,6 +157,22 @@ $(document).ready(function(){
             }    
             
         );
+	});
+	$('#listWordSectionNav').click(function()
+	{
+		if(checkCookieExpired()==false)
+            alert("Session expired. Return to login page.");
+		$.get('listWordPage',function(response,status)
+		{
+			if(status!='success')
+				alert('request for searchWordPage failed');
+			else
+			{
+				$('#activeSection').html(response);
+            }
+			
+		});
+		
 	});
 	
 });
