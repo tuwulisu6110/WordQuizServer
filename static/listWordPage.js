@@ -24,7 +24,11 @@ function refreshSourceRadioGroup()
 {
     var radioGroup = document.getElementById("sourceRadioGroup");
     var sources = sourceList;
-    var radioString = "";
+    var radioString;
+    if(showedSourceKeyList.indexOf("-1")==-1)
+        radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
+    else
+        radioString = "";
     for(var key in sources)
     {
         if(showedSourceKeyList.indexOf(key)==-1)
@@ -34,6 +38,11 @@ function refreshSourceRadioGroup()
         }
     }
 	radioGroup.innerHTML = radioString;
+    if(radioString=="")
+        $('#addSourceTabButton').attr('disabled',true);
+    else
+        $('#addSourceTabButton').attr('disabled',false);
+
 }
 function getCheckedSourceId()
 {
@@ -42,11 +51,13 @@ function getCheckedSourceId()
 	for(var i=0 ; i< radioButtons.length ; i++)
 		if(radioButtons[i].checked)
 			return radioButtons[i].value;
-    return -1;
+    return -2;
 }
 function getCheckedSourceText()
 {
     var checkedId = getCheckedSourceId();
+    if(checkedId == -1)
+        return "None";
 	return sourceList[checkedId];
 }
 function generateWordTableHtmlString(words)
@@ -81,6 +92,8 @@ $(document).ready(function(){
     $("#addSourceTabButton").click(function()
     {
         var checkedSourceId = getCheckedSourceId();
+        if(checkedSourceId == -2)
+            return;
         var checkedSourceName = getCheckedSourceText();
         var newTabHtml = '<li><a data-toggle="tab" href="#source'+checkedSourceId.toString()+'">'+checkedSourceName+'</li>'
         $(newTabHtml).insertBefore('#sourceTabs li:last');
@@ -123,7 +136,6 @@ $(document).ready(function(){
     });
     $('#sourceTabContents').on('click',"[deletebutton]",function()
     {
-        alert('test');
         var deleteWordId = $(this).attr('wordid');
         var parameters = prepareSessionData();
         parameters.wordId=deleteWordId;
