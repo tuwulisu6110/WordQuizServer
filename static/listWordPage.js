@@ -55,7 +55,7 @@ function generateWordTableHtmlString(words)
     var wordNum = words.length;
     for(var i=0;i<wordNum;i++)
     {
-        html+='<tr>';
+        html+='<tr rowid = '+words[i].id+'>';
         html+='<td>'+words[i].word+'</td>';
         html+='<td>'+words[i].reading+'</td>';
         html+='<td>'+words[i].meaning+'</td>';
@@ -64,7 +64,7 @@ function generateWordTableHtmlString(words)
         html+='<td>'+Math.floor(words[i].rate*100).toString() + '%'+'</td>';
         html+='<td>'+words[i].pick+'</td>';
         html+='<td>'+words[i].correct+'</td>';
-        html+='<td>'+"<input type='button' value = 'delete' wordid = "+words[i].id+"/>"+'</td>';
+        html+='<td>'+"<input type='button' value = 'delete' wordid = "+words[i].id+" deletebutton/>"+'</td>';
         html+='</tr>'
     }
     return html;
@@ -119,6 +119,31 @@ $(document).ready(function(){
                     else
                         alert(response.status);
                  }
+        });
+    });
+    $('#sourceTabContents').on('click',"[deletebutton]",function()
+    {
+        alert('test');
+        var deleteWordId = $(this).attr('wordid');
+        var parameters = prepareSessionData();
+        parameters.wordId=deleteWordId;
+        $.ajax(
+        {        
+            type : 'POST',
+            url : 'deleteWord',
+            data: JSON.stringify(parameters),
+            contentType : 'application/json;charset=UTF-8',
+            success: 
+            function(response)
+            {
+                if(response.status=='success')
+                {
+                    $('[rowid='+deleteWordId+']').remove();
+                }        
+                else
+                    alert(response.status);
+            }
+        
         });
     });
 });
