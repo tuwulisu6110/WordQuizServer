@@ -70,7 +70,7 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-				refreshRadioGroup();//in addNewWordPage.js
+				//refreshRadioGroup();//in addNewWordPage.js
 			}
 		});
 		

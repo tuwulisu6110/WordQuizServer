@@ -102,39 +102,33 @@ function submitWord()
 		alert("word can't be empty");
 		return;
 	}
-	if (window.XMLHttpRequest)
-		xmlhttp=new XMLHttpRequest();// code for IE7+, Firefox, Chrome, Opera, Safari
-	else
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");// code for IE6, IE5
-	xmlhttp.onreadystatechange=function()
-	{
-		if (xmlhttp.readyState==4)
-		{
-			var jsonResponse = JSON.parse(xmlhttp.responseText);
-			if(jsonResponse.status=="success")
-			{
-				document.getElementById("wordText").value = "";
-				document.getElementById("readingText").value = "";
-				document.getElementById("meaningText").value = "";
-				document.getElementById("sentenceText").value = "";
-				document.getElementById("pageText").value = "";
-			}
-            else
-            {
-                alert(jsonResponse.status);
-            }
-            $('#readingSelection').hide();
-            $('#meaningSelection').hide();
-		}
-	}
 	var parameters = JSON.stringify({"username":username,"serialNum":serialNum,
 									"identifier":identifier,"word":word,
 									"reading":reading,"meaning":meaning,
 									"sourceId":sourceId,"page":page,"sentence":sentence});
-	xmlhttp.open("POST","addWord",true);
-	xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	xmlhttp.send(parameters);
-	
+	$.ajax(
+	{
+    type : "POST",
+    url : "addWord",
+    data: parameters,
+    contentType: 'application/json;charset=UTF-8',
+    success: 
+        function(response)
+        {
+            if(response.status=='success')
+            {
+                document.getElementById("wordText").value = "";
+                document.getElementById("readingText").value = "";
+                document.getElementById("meaningText").value = "";
+                document.getElementById("sentenceText").value = "";
+                document.getElementById("pageText").value = "";
+            }
+            else
+                alert(response.status);
+            $('#readingSelection').hide();
+            $('#meaningSelection').hide();
+        }
+    });
 }
 
 function refreshSelection(response,selectionType)
