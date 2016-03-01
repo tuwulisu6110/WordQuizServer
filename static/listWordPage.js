@@ -83,8 +83,11 @@ function generateWordTableHtmlString(words)
 }
 function generateSourceTab(checkedSourceId,checkedSourceName)
 {
-    var newTabHtml = '<li><a data-toggle="tab" href="#source'+checkedSourceId.toString()+'">'
-                        +checkedSourceName+'</li>'
+    var newTabHtml = '<li><a data-toggle="tab" href="#source'
+                        +checkedSourceId.toString()+'">'
+                        +checkedSourceName+
+                        '<button type="button" class="close" deletesourceid="'+
+                        checkedSourceId.toString()+'">&times;</button></li>';
     $(newTabHtml).insertBefore('#sourceTabs li:last');
     $("#sourceTabContents").append('<div id="source'+checkedSourceId.toString()+'" class="tab-pane fade"></div>');
     var parameters = prepareSessionData();
@@ -141,9 +144,17 @@ function rebuildSourceTabs()
     }
 }
 
+function refreshShowedSourceIdCookie()
+{
+    var ids = '';
+    for(var i=0;i<showedSourceKeyList.length;i++)
+        ids+=showedSourceKeyList[i]+',';
+    setCookie('showedSourceId_'+getCookie('username'),ids.slice(0,ids.length-1),3600);
+}
+
 $(document).ready(function(){
     showedSourceKeyList = getCheckedSourceIdFromCookie();
-    refreshSourceList();
+    refreshSourceList();//rebuild source Tabs as well
     $("#addSourceTab").click(function()
     {
         refreshSourceRadioGroup();
@@ -155,12 +166,8 @@ $(document).ready(function(){
         if(checkedSourceId == -2)
             return;
         var checkedSourceName = getCheckedSourceText();
-        
         showedSourceKeyList.push(checkedSourceId);
-        var ids = '';
-        for(var i=0;i<showedSourceKeyList.length;i++)
-            ids+=showedSourceKeyList[i]+','
-        setCookie('showedSourceId_'+getCookie('username'),ids.slice(0,ids.length-1),3600);
+        refreshShowedSourceIdCookie();
         generateSourceTab(checkedSourceId,checkedSourceName);
     });
     $('#sourceTabContents').on('click',"[deletebutton]",function()
@@ -186,5 +193,14 @@ $(document).ready(function(){
             }
         
         });
+    });
+    $('#sourceTabs').on('click','li [deletesourceid]',function()
+    {
+        var deleteSourceId = $(this).attr('deletesourceid');
+        var indexOfDeleteSourceId = showedSourceKeyList.indexOf(deleteSourceId);
+        showedSourceKeyList.splice(indexOfDeleteSourceId,1);
+        refreshShowedSourceIdCookie();
+        $(this).parent().remove();
+        $("#sourceTabContents #source"+deleteSourceId).remove();
     });
 });
