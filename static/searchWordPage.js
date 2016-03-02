@@ -36,10 +36,8 @@ function refreshWordsTable(wordsTable,jsonResponse)
 			row.insertCell(2).innerHTML = aWord.meaning;
 			row.insertCell(3).innerHTML = aWord.sourceName;
 			row.insertCell(4).innerHTML = aWord.sentence;
-			row.insertCell(5).innerHTML = Math.floor(aWord.rate*100).toString() + '%';
-			row.insertCell(6).innerHTML = aWord.pick;
-			row.insertCell(7).innerHTML = aWord.correct;
-			row.insertCell(8).innerHTML = "<input type='button' value = 'delete' onclick = 'deleteWord(" + aWord.id + "," + row.rowIndex + ")'>";
+			row.insertCell(5).innerHTML = aWord.page;
+			row.insertCell(6).innerHTML = "<input type='button' value = 'delete' onclick = 'deleteWord(" + aWord.id + "," + row.rowIndex + ")'>";
 		}
 	}
 }

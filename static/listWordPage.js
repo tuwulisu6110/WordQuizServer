@@ -73,9 +73,7 @@ function generateWordTableHtmlString(words)
         html+='<td>'+words[i].meaning+'</td>';
         html+='<td>'+words[i].sourceName+'</td>';
         html+='<td>'+words[i].sentence+'</td>';
-        html+='<td>'+Math.floor(words[i].rate*100).toString() + '%'+'</td>';
-        html+='<td>'+words[i].pick+'</td>';
-        html+='<td>'+words[i].correct+'</td>';
+        html+='<td>'+words[i].page+'</td>';
         html+='<td>'+"<input type='button' value = 'delete' wordid = "+words[i].id+" deletebutton/>"+'</td>';
         html+='</tr>'
     }
@@ -111,9 +109,7 @@ function generateSourceTab(checkedSourceId,checkedSourceName)
                     $('#'+tableId+' thead tr').append('<th>meaning</th>');
                     $('#'+tableId+' thead tr').append('<th>source</th>');
                     $('#'+tableId+' thead tr').append('<th>sentence</th>');
-                    $('#'+tableId+' thead tr').append('<th>accuracy</th>');
-                    $('#'+tableId+' thead tr').append('<th>pick</th>');
-                    $('#'+tableId+' thead tr').append('<th>correct</th>');
+                    $('#'+tableId+' thead tr').append('<th>page</th>');
                     $('#'+tableId+' thead tr').append('<th>delete</th>');
                     $('#'+tableId).append('<tbody></tbody>');
                     var tableBody = generateWordTableHtmlString(response.words);

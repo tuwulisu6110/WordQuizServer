@@ -262,4 +262,27 @@ $(document).ready(function(){
         var deleteMode = getCheckedDeleteMode();
         deleteSource(deleteMode,checkedSourceId);
     });
+    $('#analyzeWordButton').click(function()
+    {
+        var word=$('#wordText').val();
+        var requestData = 
+        {
+            "app_id":"27151e1728397dcec2695b9f8bb3b31f7eec08c9fac109c11a3ad19a4b7d9a23",
+            "sentence":word,
+            "info_filter":"pos"
+        };
+        $.ajax(
+        {
+            type : "POST",
+            url : "https://labs.goo.ne.jp/api/morph",
+            crossDomain: true,
+            data: requestData,
+            contentType: 'application/x-www-form-urlencoded',
+            success: function(response)
+                     {
+                       rrr=response; 
+                     }
+                
+        });
+    } );
 });
