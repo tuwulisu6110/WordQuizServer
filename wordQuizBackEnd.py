@@ -42,6 +42,7 @@ def commit_db(query, args=()):
     db.execute(query, args)
     db.commit()
     db.close()
+
 def clearOldCookies():
     commit_db('delete from cookies where expiredTime < ?',[int(time.time())])
 clearOldCookies()
@@ -82,7 +83,8 @@ def generateJsonWord(row,sourceNameTable):
             'id':row['id'],
             'rate':rate,
             'pick':row['pick'],
-            'correct':row['correct']}
+            'correct':row['correct'],
+            'sourceId':row['sourceId']}
     return aWord
 
 def checkRequestValid(tagList=[]):
@@ -280,6 +282,30 @@ def deleteWord():
     else:
         return jsonify({'status':'cant find word:'+
             str(request.json['wordId'])}),199
+
+@app.route('/updateWord',methods = {'POST'})
+@checkRequestValid(tagList = 
+        ['word','reading','meaning','sourceId','page','sentence','wordId'])
+@checkTimeStamp
+def updateWord():
+    wordTableName = request.json['username']+"_words"
+    wordInfo = []
+    wordInfo.append(request.json['word'])
+    wordInfo.append(request.json['reading'])
+    wordInfo.append(request.json['meaning'])
+    wordInfo.append(request.json['sourceId'])
+    wordInfo.append(request.json['page'])
+    wordInfo.append(request.json['sentence'])
+    wordInfo.append(request.json['wordId'])
+    sql = 'update '+wordTableName+''' set 
+    word = ?, 
+    reading = ?, 
+    description = ?, 
+    sourceId = ?, 
+    page = ?, 
+    sentence = ? where id is ?;'''
+    commit_db(sql,wordInfo)
+    return jsonify({'status':'success'}),201
 
 @app.route('/addWord',methods = {'POST'})
 @checkRequestValid(tagList = 

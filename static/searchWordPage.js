@@ -1,3 +1,8 @@
+var nowWords;
+var updatedSourceCheckedId;
+var updatedWordCheckedId;
+var cachedTableHtml;
+var originalSourceId;
 function deleteWord(wordId,rowId)
 {
     var parameters = prepareSessionData();
@@ -37,7 +42,8 @@ function refreshWordsTable(wordsTable,jsonResponse)
 			row.insertCell(3).innerHTML = aWord.sourceName;
 			row.insertCell(4).innerHTML = aWord.sentence;
 			row.insertCell(5).innerHTML = aWord.page;
-			row.insertCell(6).innerHTML = "<input type='button' value = 'delete' onclick = 'deleteWord(" + aWord.id + "," + row.rowIndex + ")'>";
+			row.insertCell(6).innerHTML = "<input type='button' value = 'update' updatewordindex = '"+i+"'/>";
+            row.insertCell(7).innerHTML = "<input type='button' value = 'delete' onclick = 'deleteWord(" + aWord.id + "," + row.rowIndex + ")'>";
 		}
 	}
 }
@@ -62,10 +68,89 @@ function searchWord(targetWord)
 			    if(response.status=='success')
 			    {
 			        var wordsTable = document.getElementById("wordsTable").getElementsByTagName('tbody')[0];
-			        refreshWordsTable(wordsTable,response);
+			        nowWords = response.words;
+                    refreshWordsTable(wordsTable,response);
 			    }
 			    else
 				    alert(response.status);
 		     }
     });
 }
+function getUpdateFormHtml(word)
+{
+    var html = '';
+    html+='<td><input type="text" class= "form-control" value = "'+word.word+'" id = "updateWordText"/></td>';
+    html+='<td><input type="text" class= "form-control" value = "'+word.reading+'" id = "updateReadingText"/></td>';
+    html+='<td><input type="text" class= "form-control" value = "'+word.meaning+'" id = "updateMeaningText"/></td>';
+    html+='<td><a id="selectingSourceA">'+word.sourceName+'<a/></td>';
+    html+='<td><input type="text" class= "form-control" value = "'+word.sentence+'" id = "updateSentenceText"/></td>';
+    html+='<td><input type="text" class= "form-control" value = "'+word.page+'" id = "updatePageText"/></td>';
+    html+="<td><input type='button' value = 'comfirm' id='updateComfirm'/></td>";
+    html+="<td><input type='button' value = 'cancel' id='updateCancel'/></td>";
+    return html;
+}
+function updateWord()
+{
+    var parameters = prepareSessionData();
+    parameters.word=$('#updateWordText').val();
+    parameters.reading=$('#updateReadingText').val();
+    parameters.meaning=$('#updateMeaningText').val();
+    parameters.sourceId=updatedSourceCheckedId;
+    parameters.sentence=$('#updateSentenceText').val();
+    parameters.page=$('#updatePageText').val();
+    parameters.wordId=updatedWordCheckedId;
+	$.ajax(
+	{
+    type : "POST",
+    url : "updateWord",
+    data: JSON.stringify(parameters),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(response) 
+		     {
+			    if(response.status=='success')
+			    {
+                    searchWord($('#searchWordText').val());                    
+			    }
+			    else
+				    alert(response.status);
+		     }
+    });
+}
+$(document).ready(function()
+{
+    $('#wordsTable').on('click',"[updatewordindex]",function()
+    {
+        var wordIndex = parseInt($(this).attr('updatewordindex'));
+        updatedWordCheckedId = nowWords[wordIndex].id;
+        updatedSourceCheckedId = nowWords[wordIndex].sourceId;
+        var updateFormHtml = getUpdateFormHtml(nowWords[wordIndex]);
+        cachedTableHtml = $(this).parent().parent().html();
+        $(this).parent().parent().html(updateFormHtml);
+        xxx();        
+    });
+    $('#wordsTable').on('click',"#selectingSourceA",function()
+    {
+        refreshSourceList(function()
+        {
+            refreshSourceList(function(){refreshSourceRadioGroup();});
+            $('#sourceSelectingModal').modal('show');
+        });
+    });
+    $("#setSourceButton").click(function()
+    {
+        updatedSourceCheckedId = getCheckedSourceId();
+        if(updatedSourceCheckedId==-2)
+            updatedSourceCheckedId = originalSourceId;
+        $('#selectingSourceA').html(getCheckedSourceText());
+    });
+    $('#wordsTable').on('click',"#updateComfirm",function()
+    {
+        fulfillWordTableWithAllWords();
+        updateWord();
+    });
+    $('#wordsTable').on('click',"#updateCancel",function()
+    {
+        $(this).parent().parent().html(cachedTableHtml);
+    });
+});
+

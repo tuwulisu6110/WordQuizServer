@@ -1,4 +1,3 @@
-var sourceList;
 function newSource()
 {
 
@@ -17,7 +16,7 @@ function newSource()
 		     {
 			    if(response.status=='success')
 			    {
-				    refreshSourceRadioGroup();
+				    refreshSourceList(function(){refreshSourceRadioGroup();});
 			    }
 			    else
 				    alert(response.status);
@@ -39,7 +38,7 @@ function deleteSource(deleteMode,sourceId)
 		     {
 			    if(response.status=='success')
 			    {
-                    refreshSourceRadioGroup();
+				    refreshSourceList(function(){refreshSourceRadioGroup();});
 				    alert(response.detail);
 			    }
 			    else
@@ -47,42 +46,6 @@ function deleteSource(deleteMode,sourceId)
 		     }
     });
 
-}
-function refreshSourceRadioGroup()
-{
-    var parameters = prepareSessionData();
-	$.ajax(
-	{
-    type : "POST",
-    url : "listSource",
-    data: JSON.stringify(parameters),
-    contentType: 'application/json;charset=UTF-8',
-    success: function(response) 
-		     {
-			    if(response.status=='success')
-			    {
-				    var radioGroup = document.getElementById("sourceRadioGroup");
-				    sourceList = response.sources;
-                    var sources = sourceList;
-				    var radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
-				    for(var key in sources)
-					    radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
-                                        + sources[key] + "</label><br>";
-				    radioGroup.innerHTML = radioString;
-			    }
-			    else
-				    alert(response.status);
-		     }
-    });
-}
-function getCheckedSourceId()
-{
-	var radioGroup = document.getElementById("sourceRadioGroup");
-	var radioButtons = radioGroup.getElementsByTagName("input");
-	for(var i=0 ; i< radioButtons.length ; i++)
-		if(radioButtons[i].checked)
-			return radioButtons[i].value;
-    return -1;
 }
 
 function submitWord()
@@ -95,6 +58,8 @@ function submitWord()
 	var reading = document.getElementById("readingText").value;
 	var meaning = document.getElementById("meaningText").value;
 	var sourceId = getCheckedSourceId();
+    if(sourceId==-2)
+        sourceId = -1;
 	var sentence = document.getElementById("sentenceText").value;
 	var page = document.getElementById("pageText").value;
 	if(word=="")
@@ -193,20 +158,12 @@ function listAllMeaningByWord(word)
     });
 }
 
-function getCheckedSourceText()
-{
-    var checkedId = getCheckedSourceId();
-    if(checkedId==-1)
-        return "None";
-    else
-	    return sourceList[checkedId];
-}
 function getCheckedDeleteMode()
 {
    return $('#deleteModeRadioGroup input[name=deleteMode]:checked').val(); 
 }
 $(document).ready(function(){
-    refreshSourceRadioGroup();
+	refreshSourceList(function(){refreshSourceRadioGroup();});
     $('#listReadingButton').click(function()
     {
         var word = $('#wordText').val();
@@ -246,7 +203,7 @@ $(document).ready(function(){
     $('#selectDeleteModeButton').click(function()
     {
         var checkSourceId = getCheckedSourceId();
-        if(checkSourceId==-1)
+        if(checkSourceId==-1||checkSourceId==-2)
         {
             alert("Should select a valid source.");
         }

@@ -1,66 +1,4 @@
-var sourceList=[];
-var showedSourceKeyList=[];
-function refreshSourceList()
-{
-    var parameters = prepareSessionData();
-	$.ajax(
-	{
-    type : "POST",
-    url : "listSource",
-    data: JSON.stringify(parameters),
-    contentType: 'application/json;charset=UTF-8',
-    success: function(response) 
-		     {
-			    if(response.status=='success')
-                {
-				    sourceList = response.sources;
-                    rebuildSourceTabs();
-                }
-			    else
-				    alert(response.status);
-		     }
-    });
-}
-function refreshSourceRadioGroup()
-{
-    var radioGroup = document.getElementById("sourceRadioGroup");
-    var sources = sourceList;
-    var radioString;
-    if(showedSourceKeyList.indexOf("-1")==-1)
-        radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
-    else
-        radioString = "";
-    for(var key in sources)
-    {
-        if(showedSourceKeyList.indexOf(key)==-1)
-        {
-            radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
-                            + sources[key] + "</label><br>";
-        }
-    }
-	radioGroup.innerHTML = radioString;
-    if(radioString=="")
-        $('#addSourceTabButton').attr('disabled',true);
-    else
-        $('#addSourceTabButton').attr('disabled',false);
-
-}
-function getCheckedSourceId()
-{
-	var radioGroup = document.getElementById("sourceRadioGroup");
-	var radioButtons = radioGroup.getElementsByTagName("input");
-	for(var i=0 ; i< radioButtons.length ; i++)
-		if(radioButtons[i].checked)
-			return radioButtons[i].value;
-    return -2;
-}
-function getCheckedSourceText()
-{
-    var checkedId = getCheckedSourceId();
-    if(checkedId == -1)
-        return "None";
-	return sourceList[checkedId];
-}
+var showedSourceKeyList = [];
 function generateWordTableHtmlString(words)
 {
     var html='';
@@ -135,7 +73,7 @@ function rebuildSourceTabs()
         id = showedSourceKeyList[i];
         if(id=='-1')
             generateSourceTab(id,'None');   
-        else
+        else if(sourceList[id]!=undefined)
             generateSourceTab(id,sourceList[id]);   
     }
 }
@@ -147,13 +85,31 @@ function refreshShowedSourceIdCookie()
         ids+=showedSourceKeyList[i]+',';
     setCookie('showedSourceId_'+getCookie('username'),ids.slice(0,ids.length-1),3600);
 }
+function controlAddTabButtonOnOff()
+{
+    if($('#sourceRadioGroup').html()=="")
+        $('#addSourceTabButton').attr('disabled',true);
+    else
+        $('#addSourceTabButton').attr('disabled',false);
+}
 
 $(document).ready(function(){
     showedSourceKeyList = getCheckedSourceIdFromCookie();
-    refreshSourceList();//rebuild source Tabs as well
+    refreshSourceList(function()
+    {
+        duplicateIds = [];
+        for(var i = 0;i<showedSourceKeyList.length;i++)
+            if(!sourceList[showedSourceKeyList[i]])
+                duplicateIds.push(showedSourceKeyList[i]);
+        for(var i = 0;i<duplicateIds.length;i++)
+            showedSourceKeyList.splice(showedSourceKeyList.indexOf(duplicateIds[i]),1);
+        refreshShowedSourceIdCookie();
+        rebuildSourceTabs();
+    });
     $("#addSourceTab").click(function()
     {
-        refreshSourceRadioGroup();
+        refreshSourceRadioGroup('listSourcePage');//at sourceModal.js
+        controlAddTabButtonOnOff();
         $("#sourceSelectingModal").modal("show");            
     });
     $("#addSourceTabButton").click(function()
