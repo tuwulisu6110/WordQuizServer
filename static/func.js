@@ -86,7 +86,6 @@ $(document).ready(function(){
 			else
 			{
 				$('#activeSection').html(response);
-			    fulfillWordTableWithAllWords();//in searchWordPage.js
             }
 			
 		});

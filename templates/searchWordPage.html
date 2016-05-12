@@ -1,23 +1,15 @@
+<style>
+th, td
+{
+text-align: center;
+}
+</style>
 <script src="{{url_for('static',filename='sourceModal.js')}}"></script>
+<script src="{{url_for('static',filename='wordTable.js')}}"></script>
 <script src="{{url_for('static',filename='searchWordPage.js')}}"></script>
 <input type="text" id="searchWordText">
 <input type="button" onclick = "searchWord($('#searchWordText').val())" value="Search Word">
-<table id = "wordsTable" class="table table-condensed" >
-    <thead>
-        <tr>
-            <th>word</th>
-            <th>reading</th>
-            <th>meaning</th>
-            <th>source</th>
-            <th>sentence</th>
-            <th>page</th>
-            <th>update</th>
-            <th>delete</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div id = 'tableDiv'></div>
 <div class="modal fade" id="sourceSelectingModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">

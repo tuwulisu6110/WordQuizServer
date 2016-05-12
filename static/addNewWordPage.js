@@ -57,7 +57,7 @@ function submitWord()
 	var word = document.getElementById("wordText").value;
 	var reading = document.getElementById("readingText").value;
 	var meaning = document.getElementById("meaningText").value;
-	var sourceId = getCheckedSourceId();
+	var sourceId = getCheckedSourceId("sourceRadioGroup");
     if(sourceId==-2)
         sourceId = -1;
 	var sentence = document.getElementById("sentenceText").value;
@@ -197,12 +197,12 @@ $(document).ready(function(){
     });
     $('#setSourceButton').click(function()
     {
-        var selectedSourceText = getCheckedSourceText();
+        var selectedSourceText = getCheckedSourceText("sourceRadioGroup");
         $("#sourceText").val(selectedSourceText); 
     });
     $('#selectDeleteModeButton').click(function()
     {
-        var checkSourceId = getCheckedSourceId();
+        var checkSourceId = getCheckedSourceId("sourceRadioGroup");
         if(checkSourceId==-1||checkSourceId==-2)
         {
             alert("Should select a valid source.");
@@ -215,7 +215,7 @@ $(document).ready(function(){
     });
     $('#deleteSourceButton').click(function()
     {
-        var checkedSourceId = getCheckedSourceId();
+        var checkedSourceId = getCheckedSourceId("sourceRadioGroup");
         var deleteMode = getCheckedDeleteMode();
         deleteSource(deleteMode,checkedSourceId);
     });

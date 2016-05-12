@@ -22,9 +22,9 @@ function refreshSourceList(somethingAfterRefresh)
 		     }
     });
 }
-function getCheckedSourceId()
+function getCheckedSourceId(sourceRadioGroupId)
 {
-	var radioGroup = document.getElementById("sourceRadioGroup");
+	var radioGroup = document.getElementById(sourceRadioGroupId);
 	var radioButtons = radioGroup.getElementsByTagName("input");
 	for(var i=0 ; i< radioButtons.length ; i++)
 		if(radioButtons[i].checked)
@@ -32,9 +32,9 @@ function getCheckedSourceId()
     return -2;
 }
 
-function getCheckedSourceText()
+function getCheckedSourceText(sourceRadioGroupId)
 {
-    var checkedId = getCheckedSourceId();
+    var checkedId = getCheckedSourceId(sourceRadioGroupId);
     if(checkedId==-1||checkedId==-2)
         return "None";
     else
@@ -45,31 +45,31 @@ function refreshSourceRadioGroup(onPage)
 {
     if(typeof(onPage)==='undefined')
         onPage = '';
-    var radioGroup = document.getElementById("sourceRadioGroup");
     var sources = sourceList;
     var radioString;
     if(onPage!='listSourcePage')
+    {
+        var radioGroup = document.getElementById("sourceRadioGroup");
         radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
+        for(var key in sources)
+        {
+            radioString += "<label><input type='radio' name='sources' value=" + key + ">"
+                                    + sources[key] + "</label><br>";
+        }
+    }
     else
     {
+        var radioGroup = document.getElementById("sourceTabRadioGroup");
         if(showedSourceKeyList.indexOf("-1")==-1)
             radioString = "<label><input type='radio' name='sources' value='-1'>None</label><br>";
         else
             radioString = "";
-    }
-    for(var key in sources)
-    {
-        if(onPage!='listSourcePage')
-            radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
-                            + sources[key] + "</label><br>";
-        else
-        {
+        for(var key in sources)
             if(showedSourceKeyList.indexOf(key)==-1)
             {
                 radioString += "<label><input type='radio' name='sources' value=" + key + ">" 
                                 + sources[key] + "</label><br>";
             }
-        }
     }
     radioGroup.innerHTML = radioString;
 

@@ -1,31 +1,7 @@
 var showedSourceKeyList = [];
-function generateWordTableHtmlString(words)
+var sourceWordTable = {};
+function searchWordsBySourceAndUpdateTable(checkedSourceId)
 {
-    var html='';
-    var wordNum = words.length;
-    for(var i=0;i<wordNum;i++)
-    {
-        html+='<tr rowid = '+words[i].id+'>';
-        html+='<td>'+words[i].word+'</td>';
-        html+='<td>'+words[i].reading+'</td>';
-        html+='<td>'+words[i].meaning+'</td>';
-        html+='<td>'+words[i].sourceName+'</td>';
-        html+='<td>'+words[i].sentence+'</td>';
-        html+='<td>'+words[i].page+'</td>';
-        html+='<td>'+"<input type='button' value = 'delete' wordid = "+words[i].id+" deletebutton/>"+'</td>';
-        html+='</tr>'
-    }
-    return html;
-}
-function generateSourceTab(checkedSourceId,checkedSourceName)
-{
-    var newTabHtml = '<li><a data-toggle="tab" href="#source'
-                        +checkedSourceId.toString()+'">'
-                        +checkedSourceName+
-                        '<button type="button" class="close" deletesourceid="'+
-                        checkedSourceId.toString()+'">&times;</button></li>';
-    $(newTabHtml).insertBefore('#sourceTabs li:last');
-    $("#sourceTabContents").append('<div id="source'+checkedSourceId.toString()+'" class="tab-pane fade"></div>');
     var parameters = prepareSessionData();
     parameters['conditionList']=[{'colume':'sourceId','target':checkedSourceId,'conditionType':'match'}]
     $.ajax(
@@ -39,24 +15,28 @@ function generateSourceTab(checkedSourceId,checkedSourceName)
                 if(response.status=='success')
                 {
                     var tableId = 'sourceTable'+checkedSourceId.toString();
-                    $("#source"+checkedSourceId.toString()).append(
-                        '<table id = "'+tableId+'" class="table table-condensed" >');
-                    $('#'+tableId).append('<thead><tr></tr></thead>');
-                    $('#'+tableId+' thead tr').append('<th>word</th>');
-                    $('#'+tableId+' thead tr').append('<th>reading</th>');
-                    $('#'+tableId+' thead tr').append('<th>meaning</th>');
-                    $('#'+tableId+' thead tr').append('<th>source</th>');
-                    $('#'+tableId+' thead tr').append('<th>sentence</th>');
-                    $('#'+tableId+' thead tr').append('<th>page</th>');
-                    $('#'+tableId+' thead tr').append('<th>delete</th>');
-                    $('#'+tableId).append('<tbody></tbody>');
+                    createWordsTableForm('source'+checkedSourceId.toString(),tableId);
                     var tableBody = generateWordTableHtmlString(response.words);
+                    sourceWordTable["source"+checkedSourceId.toString()]=response.words;
+                    $('#'+tableId+' tbody').html("");
                     $('#'+tableId+' tbody').append(tableBody);
+                    
                 }
                 else
                     alert(response.status);
              }
     });
+}
+function generateSourceTab(checkedSourceId,checkedSourceName)
+{
+    var newTabHtml = '<li><a data-toggle="tab" href="#source'
+                        +checkedSourceId.toString()+'">'
+                        +checkedSourceName+
+                        '<button type="button" class="close" deletesourceid="'+
+                        checkedSourceId.toString()+'">&times;</button></li>';
+    $(newTabHtml).insertBefore('#sourceTabs li:last');
+    $("#sourceTabContents").append('<div id="source'+checkedSourceId.toString()+'" class="tab-pane fade"></div>');
+    searchWordsBySourceAndUpdateTable(checkedSourceId);
 }
 function getCheckedSourceIdFromCookie()
 {
@@ -77,7 +57,11 @@ function rebuildSourceTabs()
             generateSourceTab(id,sourceList[id]);   
     }
 }
-
+function refreshAllShowedSourceTab()
+{
+    for(var i=0;i<showedSourceKeyList.length;i++)
+        searchWordsBySourceAndUpdateTable(showedSourceKeyList[i]);
+}
 function refreshShowedSourceIdCookie()
 {
     var ids = '';
@@ -87,7 +71,7 @@ function refreshShowedSourceIdCookie()
 }
 function controlAddTabButtonOnOff()
 {
-    if($('#sourceRadioGroup').html()=="")
+    if($('#sourceTabRadioGroup').html()=="")
         $('#addSourceTabButton').attr('disabled',true);
     else
         $('#addSourceTabButton').attr('disabled',false);
@@ -110,42 +94,35 @@ $(document).ready(function(){
     {
         refreshSourceRadioGroup('listSourcePage');//at sourceModal.js
         controlAddTabButtonOnOff();
-        $("#sourceSelectingModal").modal("show");            
+        $("#sourceTabSelectingModal").modal("show");            
     });
     $("#addSourceTabButton").click(function()
     {
-        var checkedSourceId = getCheckedSourceId();
+        var checkedSourceId = getCheckedSourceId("sourceTabRadioGroup");
         if(checkedSourceId == -2)
             return;
-        var checkedSourceName = getCheckedSourceText();
+        var checkedSourceName = getCheckedSourceText("sourceTabRadioGroup");
         showedSourceKeyList.push(checkedSourceId);
         refreshShowedSourceIdCookie();
         generateSourceTab(checkedSourceId,checkedSourceName);
     });
-    $('#sourceTabContents').on('click',"[deletebutton]",function()
+    bindDeleteWordButtonDefault('sourceTabContents');
+    bindUpdateCancelButtonDefault('sourceTabContents');
+    bindUpdateConfirmButton('sourceTabContents',function()
     {
-        var deleteWordId = $(this).attr('wordid');
-        var parameters = prepareSessionData();
-        parameters.wordId=deleteWordId;
-        $.ajax(
-        {        
-            type : 'POST',
-            url : 'deleteWord',
-            data: JSON.stringify(parameters),
-            contentType : 'application/json;charset=UTF-8',
-            success: 
-            function(response)
-            {
-                if(response.status=='success')
-                {
-                    $('[rowid='+deleteWordId+']').remove();
-                }        
-                else
-                    alert(response.status);
-            }
-        
-        });
+        updateWord(refreshAllShowedSourceTab);
     });
+    bindUpdateButton('sourceTabContents',function()
+    {
+        var wordIndex = parseInt($(this).attr('updatewordindex'));
+        var sourceId = parseInt($(this).attr('sourceId'));
+        updatedWordCheckedId = sourceWordTable['source'+sourceId.toString()][wordIndex].id;
+        updatedSourceCheckedId = sourceId;
+        var updateFormHtml = getUpdateFormHtml(sourceWordTable['source'+sourceId.toString()][wordIndex]);
+        cachedTableHtml = $(this).parent().parent().html();
+        $(this).parent().parent().html(updateFormHtml);
+    });
+    bindSelectingSoruceButtonDefault('sourceTabContents');
     $('#sourceTabs').on('click','li [deletesourceid]',function()
     {
         var deleteSourceId = $(this).attr('deletesourceid');

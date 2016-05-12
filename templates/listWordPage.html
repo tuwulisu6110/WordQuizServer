@@ -1,5 +1,6 @@
 <script src='{{url_for('static',filename='sourceModal.js')}}'></script>
 <script src='{{url_for('static',filename='cookieTools.js')}}'></script>
+<script src='{{url_for('static',filename='wordTable.js')}}'></script>
 <script src='{{url_for('static',filename = 'listWordPage.js')}}'></script>
 <div class="container-fluid">
     <ul class="nav nav-tabs" id="sourceTabs">
@@ -7,7 +8,7 @@
     </ul>
     <div class="tab-content" id="sourceTabContents">
     </div>
-    <div class="modal fade" id="sourceSelectingModal" role="dialog">
+    <div class="modal fade" id="sourceTabSelectingModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -15,13 +16,31 @@
                     <h4 class="modal-title">Select Source</h4>
                 </div>    
                 <div class="modal-body">
-                    <div id="sourceRadioGroup" class="radio"/>
+                    <div id="sourceTabRadioGroup" class="radio"/>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" id="addSourceTabButton">
                         Add Source Tab
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="sourceSelectingModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Select Source</h4>
+            </div>
+            <div class="modal-body">
+                <div id="sourceRadioGroup" class="radio"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="setSourceButton">
+                    Set Source
+                </button>
             </div>
         </div>
     </div>
