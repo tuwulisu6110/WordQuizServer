@@ -13,7 +13,7 @@ function checkCookieExpired()
 {
 	if(getCookie("username")=="")
     {
-		document.location.href = "http://220.135.188.70:5000/loginLobby";
+		document.location.href = "/loginLobby";
         return false;
     }
 }
@@ -149,7 +149,7 @@ $(document).ready(function(){
                 success: function(response)
                         {
                             if(response.status=='success')
-                                document.location.href = "http://220.135.188.70:5000/loginLobby";
+                                document.location.href = "/loginLobby";
                             else
                                 alert(response.status);
                         }

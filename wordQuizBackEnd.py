@@ -616,7 +616,10 @@ def parseMultipleResultPage(page,word):
     
     return meaningList
 
-
+def dir_last_updated(folder):
+    return str(max(os.path.getmtime(os.path.join(root_path, f))
+                   for root_path, dirs, files in os.walk(folder)
+                   for f in files))
 
 '''above is server model, following is webpage'''
 
@@ -626,7 +629,7 @@ def loginHttpPage():
 
 @app.route('/home',methods = {'GET'})
 def home():
-    return render_template('home.html')
+    return render_template('home.html',lastUpdated=dir_last_updated('static'))
 
 @app.route('/addNewWordPage', methods = {'GET'})
 def addNewWordPage():
