@@ -117,8 +117,6 @@ def checkTimeStamp(func):
             return func()
     return func_checkTimeStamp
 
-
-
 @app.route('/favicon.ico')
 def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico', mimetype='image/vnd.microsoft.icon')
@@ -539,9 +537,6 @@ def dir_last_updated(folder):
                    for f in files))
 
 '''above is server model, following is webpage'''
-
-def getUserManagementURL():
-    return "http://localhost:5001"
 
 @app.route('/loginLobby',methods = {'GET'})
 def loginHttpPage():
