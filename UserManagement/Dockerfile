@@ -1,5 +1,5 @@
 FROM python2:base
 RUN mkdir /JPWord
 ADD UserManagement.py /JPWord
-ADD DBAccessor.py /JPWord
+COPY sharedLib/*.py /JPWord
 ENTRYPOINT ["python","/JPWord/UserManagement.py"]

@@ -9,6 +9,7 @@ import sqlite3
 from random import randint
 from functools import wraps
 from DBAccessor import query_db, commit_db_and_get_lastId, commit_db
+from SharedFunction import checkRequestValid
 from flask_cors import CORS,cross_origin
 import time
 
@@ -23,22 +24,7 @@ def createRamdomString(length=10):
         rString += chr(97+randint(0,25))
     return rString
 
-def checkRequestValid(tagList=[]):
-    def decorator_checkRequestValid(func):
-        @wraps(func)
-        def func_checkRequestValid():
-	    if not request.json:
-	        abort(400)
-	    for tag in tagList:
-	        if not tag in request.json:
-                    print 'no tag : ' + tag
-	            return jsonify({'status':'lost params : '+tag}),399
-                if request.json[tag] is None:
-                    print 'request['+tag+'] is null'
-                    return jsonify({'status':'null parameter : ' + tag}),399
-            return func()
-        return func_checkRequestValid
-    return decorator_checkRequestValid
+
 
 @app.route('/login',methods = ['POST','OPTIONS'])
 @cross_origin()
