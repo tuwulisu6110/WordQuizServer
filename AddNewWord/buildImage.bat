@@ -1,4 +1,4 @@
 xcopy /I ..\sharedLib .\sharedLib
-docker build -t user-management:latest .
+docker build -t add-new-word:latest .
 rmdir /S /Q sharedLib
 ::pause

@@ -7,7 +7,7 @@ function refreshSourceList(somethingAfterRefresh)
 	$.ajax(
 	{
     type : "POST",
-    url : "listSource",
+    url : "http://localhost:5002/listSource",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
