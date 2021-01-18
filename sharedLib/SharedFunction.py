@@ -37,3 +37,28 @@ def checkTimeStamp(func):
         else:
             return func()
     return func_checkTimeStamp
+def getSourceNameTable(sourceTableName):
+    sourceNameRows = query_db('select * from '+sourceTableName)
+    sourceNameTable = {-1:''}
+    '''this is for the condition that no sourceName in some words'''
+    if sourceNameRows is not None:
+        for snRow in sourceNameRows:
+            sourceNameTable[snRow['id']] = snRow['source']
+    return sourceNameTable
+def generateJsonWord(row,sourceNameTable):
+    if row['pick']==0:
+        rate = 0
+    else:
+        rate = float(row['correct']) / row['pick']
+    aWord = {'word':row['word'],
+            'reading':row['reading'],
+            'meaning':row['description'],
+            'sourceName':sourceNameTable[row['sourceId']],
+            'sentence':row['sentence'],
+            'page':row['page'],
+            'id':row['id'],
+            'rate':rate,
+            'pick':row['pick'],
+            'correct':row['correct'],
+            'sourceId':row['sourceId']}
+    return aWord

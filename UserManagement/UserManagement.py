@@ -108,6 +108,7 @@ def stringValid(s):
 
 def clearOldCookies():
     commit_db('delete from cookies where expiredTime < ?',[int(time.time())])
+clearOldCookies()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -1,0 +1,147 @@
+<style>
+.content 
+{
+    display:table-cell;
+    vertical-align:middle;
+    padding: 0px 0px 0px 0px;
+}
+.grid_center
+{
+    margin: 0 auto;
+    display:table-cell;
+}
+.rowpadding
+{
+    padding: 5px 2px 5px 2px; 
+}
+.radio label
+{
+    padding-right: 5px;
+}
+</style>
+<script src="{{url_for('static',filename = 'sourceModal.js')}}"></script>
+<script src="{{url_for('static',filename = 'addNewWordPage.js')}}"></script>
+<div class="container-fluid">
+    <div class="row rowpadding" > 
+        <div class="col-md-2">
+            <input type="text" id="wordText" class="form-control 
+            grid_center" placeholder="word">   
+        </div>
+    </div>
+    <div class="row rowpadding"> 
+        <div class = "col-md-2">
+            <input type="text" id="readingText" class="form-control
+            grid_center" placeholder="reading">
+        </div>
+        <div class= "col-md-1">
+            <input type="button" id="listReadingButton"  
+            value="list reading" class="grid_center btn">
+        </div>
+        <div class= "col-md-1">
+            <div id="readingSelection" class="dropdown grid_center" style="display:none;">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                Select Reading
+                <span class="caret"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <textarea class="form-control grid_center" type="text" 
+            id="meaningText" rows="4" cols="50" placeholder="meaning"/>
+        </div>
+        <div class="col-md-1">
+            <input class="grid_center btn" type="button" 
+            id="listMeaningButton" value="list Meaning">
+        </div>
+        <div class="col-md-1">
+            <div id="meaningSelection" class="dropdown grid_center" style="display:none;">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                Select Meaning
+                <span class="caret"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <input type="text" id="sourceText" 
+            class="form-control grid_center" value="Source Name" disabled>
+        </div>
+
+        <div class="col-md-1">
+            <input type="button" value="Select Source" class = "btn grid_center"
+            data-toggle="modal" data-target="#sourceSelectingModal">
+        </div>
+        <div class="col-md-1">
+            <input type="button" onclick="newSource()" value="Add Source"
+            class = "btn grid_center">
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <input type="text" id="sentenceText" 
+            class="form-control grid_center" placeholder="sentence">
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-2">
+            <input type="text" id="pageText" 
+            class="form-control grid_center" placeholder="page">
+        </div>
+    </div>
+    <div class="row rowpadding">
+        <div class="col-md-1">
+            <input type="button" onclick = "submitWord()" class="btn grid-center" value="submit">
+        </div>
+    </div>
+    <div class="modal fade" id="sourceSelectingModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Select Source</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="sourceRadioGroup" class="radio"/> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="setSourceButton">
+                        Set Source
+                    </button>
+                    <button type="button" class="btn btn-default" id="selectDeleteModeButton">
+                        Delete Source
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModeSelectingModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Mode</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="deleteModeRadioGroup" class="radio">
+                        <label>
+                            <input type="radio" name="deleteMode" value="0">
+                            Delete all words in this source
+                        </label><br>
+                        <label>
+                            <input type="radio" name="deleteMode" value="1">
+                            Remain all words in this source(set to empty)
+                        </label><br>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="deleteSourceButton">
+                        Delete Source
+                    </button>
+                </div>
+            </div>
+        </div><!--modal-dialog-->
+    </div><!--modali fade-->
+</div>
