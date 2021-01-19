@@ -4,11 +4,6 @@ from flask import request
 from flask import make_response
 from flask import jsonify
 from flask import abort
-import urllib2
-import sqlite3
-from random import randint
-import time
-from functools import wraps
 from flask import url_for, redirect, render_template
 import os
 
@@ -51,4 +46,4 @@ def listWordPage():
     return render_template('listWordPage.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',ssl_context='adhoc')

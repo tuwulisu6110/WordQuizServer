@@ -1,8 +1,7 @@
-FROM python2:base
-RUN mkdir /JPWord
-RUN mkdir /JPWord/static
-RUN mkdir /JPWord/templates
-ADD WebServer.py /JPWord
-COPY static /JPWord/static
-COPY templates /JPWord/templates
-ENTRYPOINT ["python","/JPWord/WebServer.py"]
+FROM python38:base
+RUN mkdir /opt/app-root/src/static
+RUN mkdir /opt/app-root/src/templates
+ADD WebServer.py /opt/app-root/src
+COPY static /opt/app-root/src/static
+COPY templates /opt/app-root/src/templates
+ENTRYPOINT ["python","/opt/app-root/src/WebServer.py"]
