@@ -1,5 +1,4 @@
-FROM python2:base
-RUN mkdir /JPWord
-ADD AddNewWord.py /JPWord
-COPY sharedLib/*.py /JPWord
-ENTRYPOINT ["python","/JPWord/AddNewWord.py"]
+FROM python38:base
+ADD AddNewWord.py /opt/app-root/src
+COPY sharedLib/*.py /opt/app-root/src
+ENTRYPOINT ["python","/opt/app-root/src/AddNewWord.py"]

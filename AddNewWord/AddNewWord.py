@@ -4,7 +4,8 @@ from flask import request
 from flask import make_response
 from flask import jsonify
 from flask import abort
-import urllib2
+import urllib.request
+from urllib.parse import quote
 import sqlite3
 from random import randint
 import time
@@ -14,6 +15,7 @@ from DBAccessor import query_db, commit_db_and_get_lastId, commit_db
 from SharedFunction import checkRequestValid, checkTimeStamp
 from flask_cors import cross_origin
 import os
+import logging
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -25,8 +27,7 @@ app.config['DEBUG'] = True
 def addSource():
         username = request.json['username']
         sourceName = request.json['source']
-	id = commit_db_and_get_lastId('insert into '+
-                username+'_sources' +' (source) values (?)',[sourceName])
+        id = commit_db_and_get_lastId('insert into '+username+'_sources' +' (source) values (?)',[sourceName])
         return jsonify({'status':'success','lastId':id}),201
 
 @app.route('/deleteSource',methods = ['POST'])
@@ -40,7 +41,7 @@ def deleteSource():
     deleteSourceMode = request.json['deleteSourceMode']
     
     if deleteSourceMode != '0' and deleteSourceMode != '1':
-        print 'error deleteSourceMode = '+deleteSourceMode
+        print('error deleteSourceMode = '+deleteSourceMode)
         return jsonify({'status':'error deleteSourceMode = '
             + deleteSourceMode}),199
     
@@ -111,6 +112,7 @@ MozillaFakeHeader = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/
                      'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
                      'Accept-Encoding': 'none',
                      'Accept-Language': 'en-US,en;q=0.8',
+                     'Content-Type': 'application/json;charset=UTF-8',
                      'Connection': 'keep-alive'}
 gooURLFront = "http://dictionary.goo.ne.jp/srch/"
 gooURLMiddleAll = "all/"
@@ -132,19 +134,21 @@ NotFoundPageKeyword = '一致する情報は見つかりませんでした'
 def listReadingByWord():
     readingList = []
     word = request.json['word'].encode('utf-8')
-    wordEnd = left+word+right
-    wordBegin = '"title search-ttl-a"'
+    wordEnd = left+request.json['word']+right
+    wordBegin = '<p class="title">'
     cursor = 0
-    req = urllib2.Request(gooURLFront+gooURLMiddleAll+word+gooURLTail, headers=MozillaFakeHeader)
-    page = urllib2.urlopen(req).read()
+    url = gooURLFront+gooURLMiddleJn2+quote(word)+gooURLTail
+    req = urllib.request.Request(url, headers=MozillaFakeHeader)
+    page = urllib.request.urlopen(req).read().decode("utf-8")
     while(cursor!=-1):
         posEnd = page.find(wordEnd,cursor)
         if posEnd==-1:
             break
-        posBegin = page.find(wordBegin,posEnd-50)
-        posBegin = posBegin+len(wordBegin)+1
-        if posEnd>posBegin:
+        posBegin = page.find(wordBegin,posEnd-100)
+        posBegin = posBegin+len(wordBegin)
+        if posEnd>posBegin and posEnd-posBegin<50:
             reading = eliminateNonWordChar(page[posBegin:posEnd])
+            #print(reading)
             if reading not in readingList:
                 readingList.append(reading)
         cursor=posEnd+len(wordEnd)+1
@@ -159,8 +163,8 @@ def listReadingByWord():
 def listMeaningByWord():
     meaningList = []
     word = request.json['word'].encode('utf-8')
-    req = urllib2.Request(gooURLFront+gooURLMiddleJn2+word+gooURLTail, headers=MozillaFakeHeader)
-    page = urllib2.urlopen(req).read()
+    req = urllib.request.Request(gooURLFront+gooURLMiddleJn2+quote(word)+gooURLTail, headers=MozillaFakeHeader)
+    page = urllib.request.urlopen(req).read().decode("utf-8")
     pageType = determinePageType(page)
     if pageType == singleResultPage:
         meaningList = parseSingleResultPage(page)
@@ -198,12 +202,12 @@ def getTagText(xml,tagBegin,tagEnd):
         pureTag=tagBegin[:t]
     posBegin = xml.find(tagBegin,0)
     if posBegin == -1:
-        print 'Cannot find tag : "'+tagBegin+'" in getTagText function'
+        print('Cannot find tag : "'+tagBegin+'" in getTagText function')
         return 'error'
     pureTagPos = posBegin
     posEnd = xml.find(tagEnd,posBegin)
     if posEnd == -1:
-        print 'cannot find tag : "'+tagEnd+'" in getTagText function'
+        print('cannot find tag : "'+tagEnd+'" in getTagText function')
         return 'error'
     while True:
         pureTagPos = xml.find(pureTag,pureTagPos+len(pureTag),posEnd)
@@ -266,8 +270,8 @@ def parseMultipleResultPage(page,word):
                 return meaningList
             urlTail = page[urlPosBegin:urlPosEnd]
             url='http://dictionary.goo.ne.jp'+urlTail
-            req = urllib2.Request(url, headers=MozillaFakeHeader)
-            concretePage = urllib2.urlopen(req).read()
+            req = urllib.request.Request(url, headers=MozillaFakeHeader)
+            concretePage = urllib.request.urlopen(req).read()
             meaningList+=parseSingleResultPage(concretePage)
         cursor = wordEndPos
     
