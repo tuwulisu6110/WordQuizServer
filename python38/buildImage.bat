@@ -1,0 +1,1 @@
+docker build -t python38:base .
