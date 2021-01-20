@@ -1,5 +1,5 @@
 ./killContainer.sh
 ./buildImage.sh
 docker image prune -f
-startContainer.sh
+./startContainer.sh
 docker logs -f WebServer
