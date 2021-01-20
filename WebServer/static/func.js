@@ -143,7 +143,7 @@ $(document).ready(function(){
         $.ajax(
             {
                 type:'POST',
-                url:'http://localhost:5001/logout',
+                url:userManagementURL+'logout',
                 data:JSON.stringify(parameters),
                 contentType: 'application/json;charset=UTF-8',
                 success: function(response)

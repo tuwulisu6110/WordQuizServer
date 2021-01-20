@@ -7,7 +7,7 @@ function searchWordsBySourceAndUpdateTable(checkedSourceId)
     $.ajax(
     {
     type : "POST",
-    url : "http://localhost:5003/searchWord",
+    url : listWordURL+"searchWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 

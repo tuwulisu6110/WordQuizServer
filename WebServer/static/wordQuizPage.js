@@ -7,7 +7,7 @@ function recordResult(wordId,result)
 	$.ajax(
 	{
     type : "POST",
-    url : "http://localhost:5004/recordAnswerResult",
+    url : quizURL+"recordAnswerResult",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
@@ -44,7 +44,7 @@ function generateQuiz(num,quizType)
 	$.ajax(
 	{
     type : "POST",
-    url : "http://localhost:5004/randomWord",
+    url : quizURL+"randomWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 

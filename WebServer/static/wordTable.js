@@ -79,7 +79,7 @@ function updateWord(somethingAfterUpdate)
 	$.ajax(
 	{
     type : "POST",
-    url : "http://localhost:5003/updateWord",
+    url : listWordURL+"updateWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
@@ -165,7 +165,7 @@ function bindDeleteWordButtonDefault(parentDiv)
         $.ajax(
         {
             type : 'POST',
-            url : 'http://localhost:5003/deleteWord',
+            url : listWordURL+'deleteWord',
             data: JSON.stringify(parameters),
             contentType : 'application/json;charset=UTF-8',
             success:
