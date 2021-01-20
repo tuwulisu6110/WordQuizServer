@@ -1,5 +1,4 @@
-FROM python2:base
-RUN mkdir /JPWord
-ADD Quiz.py /JPWord
-COPY sharedLib/*.py /JPWord
-ENTRYPOINT ["python","/JPWord/Quiz.py"]
+FROM python38:base
+ADD Quiz.py /opt/app-root/src
+COPY sharedLib/*.py /opt/app-root/src
+ENTRYPOINT ["python","/opt/app-root/src/Quiz.py"]

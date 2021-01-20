@@ -4,7 +4,6 @@ from flask import request
 from flask import make_response
 from flask import jsonify
 from flask import abort
-import urllib2
 import sqlite3
 from random import randint
 import time
@@ -52,15 +51,15 @@ def checkConditionListValid(conditionList):
         for tag in mustContainTag:
             if not tag in condition:
                 r = 'condition : '+str(condition)+' lost tag : '+ tag
-                print r
+                print(r)
                 return r
         if not condition['colume'] in validColume:
             r = 'colume in '+str(condition)+' is not valid. validColume : '+str(validColume)
-            print r
+            print(r)
             return r
         if not condition['conditionType'] in validConditionType:
             r = 'conditionType in '+str(condition)+' is not valid. validConditionType : '+str(validConditionType)
-            print r
+            print(r)
             return r
     return 'valid'
 

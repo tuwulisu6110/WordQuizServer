@@ -4,7 +4,6 @@ from flask import make_response
 from flask import jsonify
 from flask import abort
 from flask import url_for, redirect, render_template
-import urllib2
 import sqlite3
 from random import randint
 from functools import wraps
@@ -80,23 +79,23 @@ def register():
             
             query1='''create table '''
             query2='''(
-		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-		source TEXT NOT NULL
-                );'''
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            source TEXT NOT NULL
+                    );'''
             commit_db(query1 + sourcesTableName + query2)
-	    commit_db('''create table '''+wordsTableName+'''(
-		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-		word TEXT NOT NULL,
-		reading TEXT,
-		description TEXT,
-		sourceId INTEGER,
-		sentence TEXT,
-                page TEXT,
-                pick INTEGER DEFAULT 0,
-                correct INTEGER DEFAULT 0
-		);''')
-        except sqlite3.Error ,e:
-            print 'er: %s' % e.args[0]
+            commit_db('''create table '''+wordsTableName+'''(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            word TEXT NOT NULL,
+            reading TEXT,
+            description TEXT,
+            sourceId INTEGER,
+            sentence TEXT,
+                    page TEXT,
+                    pick INTEGER DEFAULT 0,
+                    correct INTEGER DEFAULT 0
+            );''')
+        except sqlite3.Error as e:
+            print('er: %s' % e.args[0])
     return jsonify(r),201
 def stringValid(s):
     for c in s:
