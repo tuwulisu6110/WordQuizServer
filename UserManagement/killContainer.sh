@@ -1,0 +1,2 @@
+docker kill UserManagement
+docker rm UserManagement

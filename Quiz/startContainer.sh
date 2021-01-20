@@ -1,0 +1,1 @@
+docker run -d -v db:/Database -p 5004:5000 --name Quiz quiz:latest

@@ -1,0 +1,1 @@
+docker run -d -v db:/Database -p 5003:5000 --name ListWord list-word:latest
