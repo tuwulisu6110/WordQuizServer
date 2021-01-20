@@ -8,6 +8,7 @@ You can follow these steps(scripts) to build the images:
 4. AddNewWord/buildImage.sh or .bat
 5. ListWord/buildImage.sh or .bat
 6. Quiz/buildImage.sh or .bat
+
 Once these images are built, you can use startAllContainer.sh or .bat to start all of them.
 Then access the website on your browser: https://localhost:5000/loginLobby
 
