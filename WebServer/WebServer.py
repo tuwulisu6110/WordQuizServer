@@ -25,16 +25,16 @@ def dir_last_updated(folder):
 '''above is server model, following is webpage'''
 
 def getUserManagementURL(request):
-    return request.url_root.replace("5000","5001").replace("https","http")
+    return request.url_root.replace("5000","5001")#.replace("https","http")
 
 def getAddNewWordURL(request):
-    return request.url_root.replace("5000","5002").replace("https","http")
+    return request.url_root.replace("5000","5002")#.replace("https","http")
 
 def getListWordURL(request):
-    return request.url_root.replace("5000","5003").replace("https","http")
+    return request.url_root.replace("5000","5003")#.replace("https","http")
 
 def getQuizURL(request):
-    return request.url_root.replace("5000","5004").replace("https","http")
+    return request.url_root.replace("5000","5004")#.replace("https","http")
 
 @app.route('/loginLobby',methods = {'GET'})
 def loginHttpPage():

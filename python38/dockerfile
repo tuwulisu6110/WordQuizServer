@@ -2,3 +2,5 @@ FROM centos/python-38-centos7:latest
 RUN pip install flask
 RUN pip install flask_cors
 RUN pip install pyopenssl
+ADD key.pem /opt/app-root/src
+ADD cert.pem /opt/app-root/src

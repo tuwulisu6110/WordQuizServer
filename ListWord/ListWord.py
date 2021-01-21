@@ -146,4 +146,4 @@ def deleteWord():
             str(request.json['wordId'])}),199
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',ssl_context=('cert.pem', 'key.pem'))
