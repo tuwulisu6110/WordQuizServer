@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: put-db
+spec:
+  template:
+    spec:
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db-pvc
+      containers:
+      - name: put-db
+        image: asia.gcr.io/empirical-state-302503/db
+        volumeMounts:
+          - name: db
+            mountPath: /Database
+      restartPolicy: Never
+  backoffLimit: 4

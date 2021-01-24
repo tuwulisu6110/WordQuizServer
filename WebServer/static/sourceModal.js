@@ -7,7 +7,7 @@ function refreshSourceList(somethingAfterRefresh)
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"listSource",
+    url : "/listSource",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 

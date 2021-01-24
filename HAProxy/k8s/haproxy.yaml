@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: haproxy
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+        - name: haproxy
+          image: asia.gcr.io/empirical-state-302503/wq-haproxy:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 30000

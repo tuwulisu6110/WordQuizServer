@@ -10,7 +10,7 @@ function deleteWord(wordId,rowId)
 	$.ajax(
 	{
     type : "POST",
-    url : listWordURL+"deleteWord",
+    url : "/deleteWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
@@ -36,7 +36,7 @@ function searchWord(targetWord)
 	$.ajax(
 	{
     type : "POST",
-    url : listWordURL+"searchWordByWordAndReading",
+    url : "/searchWordByWordAndReading",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 

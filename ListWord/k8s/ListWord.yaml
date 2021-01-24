@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: list-word
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: list-word
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: list-word
+    spec:
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db-pvc
+      containers:
+        - name: list-word
+          image: asia.gcr.io/empirical-state-302503/list-word:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+          - name: db
+            mountPath: /Database

@@ -9,7 +9,7 @@ function newSource()
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"addSource",
+    url : "/addSource",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
@@ -31,7 +31,7 @@ function deleteSource(deleteMode,sourceId)
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"deleteSource",
+    url : "/deleteSource",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 
@@ -74,7 +74,7 @@ function submitWord()
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"addWord",
+    url : "/addWord",
     data: parameters,
     contentType: 'application/json;charset=UTF-8',
     success: 
@@ -130,7 +130,7 @@ function listAllReadingByWord(word)
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"listAllReadingByWord",
+    url : "/listAllReadingByWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response)
@@ -148,7 +148,7 @@ function listAllMeaningByWord(word)
 	$.ajax(
 	{
     type : "POST",
-    url : addNewWordURL+"listAllMeaningByWord",
+    url : "/listAllMeaningByWord",
     data: JSON.stringify(parameters),
     contentType: 'application/json;charset=UTF-8',
     success: function(response) 

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: user-management
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db-pvc
+      containers:
+        - name: user-management
+          image: asia.gcr.io/empirical-state-302503/user-management:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+          - name: db
+            mountPath: /Database

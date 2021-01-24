@@ -25,46 +25,43 @@ def dir_last_updated(folder):
 '''above is server model, following is webpage'''
 
 def getUserManagementURL(request):
-    return request.url_root.replace("5000","5001")#.replace("https","http")
+    return request.url_root#.replace("30000","30001")#.replace("https","http")
 
 def getAddNewWordURL(request):
-    return request.url_root.replace("5000","5002")#.replace("https","http")
+    return request.url_root#.replace("5000","5002")#.replace("https","http")
 
 def getListWordURL(request):
-    return request.url_root.replace("5000","5003")#.replace("https","http")
+    return request.url_root#.replace("5000","5003")#.replace("https","http")
 
 def getQuizURL(request):
-    return request.url_root.replace("5000","5004")#.replace("https","http")
+    return request.url_root#.replace("5000","5004")#.replace("https","http")
+
+@app.route('/',methods = {'GET'})
+def dummy():
+    print("Someone access dummy")
+    return "This is a dummy."
 
 @app.route('/loginLobby',methods = {'GET'})
 def loginHttpPage():
-    userManagementURL=getUserManagementURL(request)
-    return render_template('loginLobby.html').replace("%userManagementURL%",userManagementURL)
+    return render_template('loginLobby.html')
 
 @app.route('/home',methods = {'GET'})
 def home():
-    userManagementURL=getUserManagementURL(request)
-    return render_template('home.html').replace("%userManagementURL%",userManagementURL)
+    return render_template('home.html')
 
 @app.route('/addNewWordPage', methods = {'GET'})
 def addNewWordPage():
-    addNewWordURL = getAddNewWordURL(request)
-    return render_template('addNewWordPage.html').replace("%addNewWordURL%",addNewWordURL)
+    return render_template('addNewWordPage.html')
     
 @app.route('/searchWordPage', methods = {'GET'})
 def searchWordPage():
-    addNewWordURL = getAddNewWordURL(request)
-    listWordURL = getListWordURL(request)
-    return render_template('searchWordPage.html').replace("%addNewWordURL%",addNewWordURL).replace("%listWordURL%",listWordURL)
+    return render_template('searchWordPage.html')
 @app.route('/wordQuizPage', methods = {'GET'})
 def wordQuizPage():
-    quizURL = getQuizURL(request)
-    return render_template('wordQuizPage.html').replace("%quizURL%",quizURL)
+    return render_template('wordQuizPage.html')
 @app.route('/listWordPage', methods = {'GET'})
 def listWordPage():
-    addNewWordURL = getAddNewWordURL(request)
-    listWordURL = getListWordURL(request)
-    return render_template('listWordPage.html').replace("%addNewWordURL%",addNewWordURL).replace("%listWordURL%",listWordURL)
+    return render_template('listWordPage.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0')

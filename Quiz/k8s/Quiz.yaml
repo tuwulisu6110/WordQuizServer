@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: quiz
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: quiz
+    spec:
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db-pvc
+      containers:
+        - name: quiz
+          image: asia.gcr.io/empirical-state-302503/quiz:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+          - name: db
+            mountPath: /Database

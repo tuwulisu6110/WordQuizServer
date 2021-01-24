@@ -35,7 +35,7 @@
             var username = document.getElementById("usernameText").value;
             var password = document.getElementById("passwordText").value;
             var parameters = JSON.stringify({"username":username,"password":password});
-            xmlhttp.open("POST","%userManagementURL%login",true);
+            xmlhttp.open("POST","/login",true);
             xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
             xmlhttp.send(parameters);
         }
@@ -56,7 +56,7 @@
             var username = document.getElementById("usernameText").value;
             var password = document.getElementById("passwordText").value;
             var parameters = JSON.stringify({"username":username,"password":password});
-            xmlhttp.open("POST","%userManagementURL%register",true);
+            xmlhttp.open("POST","/register",true);
             xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
             xmlhttp.send(parameters);
             

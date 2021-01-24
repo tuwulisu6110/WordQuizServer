@@ -9,10 +9,30 @@ You can follow these steps(scripts) to build the images:
 5. ListWord/buildImage.sh or .bat
 6. Quiz/buildImage.sh or .bat
 
-Once these images are built, you can use startAllContainer.sh or .bat to start all of them.
-Then access the website on your browser: https://localhost:5000/loginLobby
+Before you start containers, you have to put db into volume. You can use DB/putDBIntoVolume.sh to do so.
+Once these images are built and db volume is prepared, you can use startAllContainer.sh or .bat to start all of them.
+To prevent cors, I implemented haproxy image to proxy the connection to backends.
+Before you build haproxy image, you have to start above containers and use "docker inspect network bridge" to find each container ip in docker bridge network.
+Then modify HAProxy/local/haproxy.cfg to make sure each backends are redirected to correct container ip.
+Once you modified HAProxy/local/haproxy.cfg, you can use HAProxy/local/buildImage.sh and startContainer.sh to start HAProxy.
+Finally you can access the website on your browser: https://localhost:30000/loginLobby
 
+
+To deploy images onto kubenetes cluster, following steps takes GCP as example:
+1. Create cluster/project on GCP.
+2. Instead use DB/putDBIntoVolume, you have to prepare a persistent volume with ReadWriteMany mode on GCP. To do so, we have to setup a nfs server for pv and pvc. I follow this guide to do so and put ymal at DB/nfs. [Guide](https://medium.com/@Sushil_Kumar/readwritemany-persistent-volumes-in-google-kubernetes-engine-a0b93e203180)
+3. Modify pushImage.sh scripts to point to your project's image registry and use this to push images onto GCP. For more information, see the image registry document of GCP.
+4. Once pv/pvc is prepared, we can use image and job at DB/buildImage.sh, DB/pushImage.sh and DB/db-job.yaml to put db into persistent volume.
+5. Once images are pushed onto GCP, you can use (servers)/k8s/\*.yaml to create deployment and service on GCP.
+6. After pod and services are prepared, you can check the cluster ip of each service and apply them into HAProxy/haproxy.cfg and build haproxy image and push it onto GCP.
+7. Create deployment and service for haproxy.
+
+You can access my current website on GCP: https://35.189.171.185:30000/loginLobby 
 The test account : test///123
+
+![image info](diagram.png "diagram")
+
+
 ```
 The following lists HTTP POST request(server model) description:
 1. path : "/login": 

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: add-new-word
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: add-new-word
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: add-new-word
+    spec:
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db-pvc
+      containers:
+        - name: add-new-word
+          image: asia.gcr.io/empirical-state-302503/add-new-word:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+          - name: db
+            mountPath: /Database
