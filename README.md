@@ -1,4 +1,5 @@
 # WordQuizServer
+## Local Containers
 This program is based on Python flask and sqlite. Python flask is used as an interface about sqlite manipulation. And sqlite help us to store accounts and japanese words information. 
 The server is splited into 5 py files(images): WebServer.py(webserver), UserManagement.py(user-management), AddNewWord.py(add-new-word), ListWord.py(list-word), Quiz.py(quiz).
 You can follow these steps(scripts) to build the images:
@@ -17,7 +18,8 @@ Then modify HAProxy/local/haproxy.cfg to make sure each backends are redirected 
 Once you modified HAProxy/local/haproxy.cfg, you can use HAProxy/local/buildImage.sh and startContainer.sh to start HAProxy.
 Finally you can access the website on your browser: https://localhost:30000/loginLobby
 
-
+***
+## Kubenetes Cluster
 To deploy images onto kubenetes cluster, following steps takes GCP as example:
 1. Create cluster/project on GCP.
 2. Instead use DB/putDBIntoVolume, you have to prepare a persistent volume with ReadWriteMany mode on GCP. To do so, we have to setup a nfs server for pv and pvc. I follow this guide to do so and put ymal at DB/nfs. [Guide](https://medium.com/@Sushil_Kumar/readwritemany-persistent-volumes-in-google-kubernetes-engine-a0b93e203180)
