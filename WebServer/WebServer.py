@@ -22,19 +22,6 @@ def dir_last_updated(folder):
                    for root_path, dirs, files in os.walk(folder)
                    for f in files))
 
-'''above is server model, following is webpage'''
-
-def getUserManagementURL(request):
-    return request.url_root#.replace("30000","30001")#.replace("https","http")
-
-def getAddNewWordURL(request):
-    return request.url_root#.replace("5000","5002")#.replace("https","http")
-
-def getListWordURL(request):
-    return request.url_root#.replace("5000","5003")#.replace("https","http")
-
-def getQuizURL(request):
-    return request.url_root#.replace("5000","5004")#.replace("https","http")
 
 @app.route('/',methods = {'GET'})
 def dummy():
