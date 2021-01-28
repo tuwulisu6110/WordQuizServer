@@ -28,7 +28,7 @@ def addSource():
         username = request.json['username']
         sourceName = request.json['source']
         id = commit_db_and_get_lastId('insert into '+username+'_sources' +' (source) values (?)',[sourceName])
-        return jsonify({'status':'success','lastId':id}),201
+        return jsonify({'status':'success','lastId':id}),200
 
 @app.route('/deleteSource',methods = ['POST'])
 @cross_origin()
@@ -85,7 +85,7 @@ def addWord():
     commit_db('insert into '+ wordTableAddr +
             ''' (word,reading,description,sourceId,page,sentence) 
             values (?,?,?,?,?,?)''',wordInfo)
-    return jsonify({'status':'success'}),201
+    return jsonify({'status':'success'}),200
 
 @app.route('/listSource',methods = {'POST'})
 @cross_origin()
@@ -99,7 +99,7 @@ def listSource():
             sources[row['id']] = row['source']
     r = {'sources':sources}
     r['status']='success'
-    return jsonify(r),201
+    return jsonify(r),200
 
 
 def eliminateNonWordChar(str):
@@ -154,7 +154,7 @@ def listReadingByWord():
         cursor=posEnd+len(wordEnd)+1
     if readingList == []:
         readingList = ['Not found']
-    return jsonify({'status':'success','readingList':readingList}),201
+    return jsonify({'status':'success','readingList':readingList}),200
 
 @app.route('/listAllMeaningByWord',methods = ['POST'])
 @cross_origin()
@@ -173,7 +173,7 @@ def listMeaningByWord():
     elif pageType == notFoundPage:
         meaningList = ['Not found']
         
-    return jsonify({'status':'success','meaningList':meaningList}),201
+    return jsonify({'status':'success','meaningList':meaningList}),200
 
 def determinePageType(page):
     if page.find(NotFoundPageKeyword) != -1:

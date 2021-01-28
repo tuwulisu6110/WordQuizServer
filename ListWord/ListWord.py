@@ -40,7 +40,7 @@ def searchWordOld():
         for row in rows:
             aWord = generateJsonWord(row,sourceNameTable)
             wordList.append(aWord)
-    return jsonify({'status':'success','words':wordList}),201
+    return jsonify({'status':'success','words':wordList}),200
 
 
 def checkConditionListValid(conditionList):
@@ -102,7 +102,7 @@ def searchWord():
         for row in rows:
             aWord = generateJsonWord(row,sourceNameTable)
             wordList.append(aWord)
-    return jsonify({'status':'success','words':wordList}),201
+    return jsonify({'status':'success','words':wordList}),200
 
 @app.route('/updateWord',methods = {'POST'})
 @cross_origin()
@@ -127,7 +127,7 @@ def updateWord():
     page = ?, 
     sentence = ? where id is ?;'''
     commit_db(sql,wordInfo)
-    return jsonify({'status':'success'}),201
+    return jsonify({'status':'success'}),200
 
 @app.route('/deleteWord',methods = {'POST'})
 @cross_origin()
@@ -140,7 +140,7 @@ def deleteWord():
     if row is not None:
         commit_db('delete from '+wordTableName+' where id = ?',
                 [request.json['wordId']])
-        return jsonify({'status':'success'}),201
+        return jsonify({'status':'success'}),200
     else:
         return jsonify({'status':'cant find word:'+
             str(request.json['wordId'])}),199

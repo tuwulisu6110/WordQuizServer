@@ -44,7 +44,7 @@ def login():
                 [rString,expiredTime,request.json['username']])
         r['serialNum'] = lastId
         r['identifier'] = rString
-    return jsonify( r ),201
+    return jsonify( r ),200
 
 @app.route('/logout',methods = ['POST','OPTIONS'])
 @cross_origin()
@@ -55,7 +55,7 @@ def logout():
     commit_db('delete from cookies where id = ? and rString = ?',
             [serialNum,identifier])
     r={'status':"success"}
-    return jsonify(r),201
+    return jsonify(r),200
     
 @app.route('/register',methods = ['POST','OPTIONS'])
 @cross_origin()

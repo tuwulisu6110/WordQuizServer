@@ -44,7 +44,7 @@ def randomWord():
         row = rows[rNum]
         aWord = generateJsonWord(row,sourceNameTable)
         wordList.append(aWord)
-    return jsonify({'status':'success','words':wordList}),201
+    return jsonify({'status':'success','words':wordList}),200
 
 
 @app.route('/recordAnswerResult',methods = ['POST'])
@@ -60,7 +60,7 @@ def recordAnswerResult():
     commit_db('update '+wordTableName+
             ' set pick = pick+1 '+ correctStr +
             ' where id = ?',[request.json['wordId']])
-    return jsonify({'status':'success'}),201
+    return jsonify({'status':'success'}),200
     
 
 
