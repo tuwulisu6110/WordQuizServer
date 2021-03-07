@@ -1,42 +1,24 @@
 import time
 import pytest
-from selenium.common.exceptions import NoSuchElementException
-from webTestModule import webTestInst
-
+from WebTestModule import webTestInst
 
 @pytest.mark.dependency(
     depends=["test_addNewWord.py::test_addNewWord"],
     scope='session'
 )
 def test_deleteWord(webTestInst):
-    webTestInst.login("test","123")
+    homePage=webTestInst.login("test","123")
     
-    try:
-        webTestInst.driver.find_element_by_id('listAllWordSectionNav').click()
-    except NoSuchElementException:
-        assert False, "list word bar item not found!"
-    try:
-        webTestInst.driver.find_element_by_id('searchWordText').send_keys("test")
-    except NoSuchElementException:
-        assert False, "search word text field not found!"
-   
-    try:
-        webTestInst.driver.find_element_by_xpath("//input[@value='Search Word']").click()
-    except NoSuchElementException:
-        assert False, "search word button not found!"
-    time.sleep(5)# wait for the table is refreshed
-    try:
-        webTestInst.driver.find_element_by_xpath("//td[contains(text(),'test')]")
-    except NoSuchElementException:
-        assert False, "test word not found!"
-    
-    try:
-        
-        webTestInst.driver.find_element_by_xpath("//input[@value='delete']").click()
-    except NoSuchElementException:
-        assert False, "delete button not found!"
+    listWordPage=homePage.navListWordPage()
+    listWordPage.fillSearchWordText("test")
+    listWordPage.clickSearchButton()
+    time.sleep(3)# wait for the table is refreshed
+    listWordPage.locateWord("test")
+    listWordPage.deleteWord()
 
-    webTestInst.driver.find_element_by_id('listAllWordSectionNav').click()
+    listWordPage.clickSearchButton()
+    time.sleep(3)
+    listWordPage.checkWordNotExist("test")
 
     webTestInst.logout()
     

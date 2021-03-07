@@ -1,7 +1,7 @@
 import time
 import pytest
 from selenium.common.exceptions import NoSuchElementException
-from webTestModule import webTestInst
+from WebTestModule import webTestInst
 
 
 def test_login_logout(webTestInst):

@@ -2,8 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from ConfigLoader import ConfigLoader
+from HomePage import HomePage
 import pytest
-class webTestModule:
+class WebTestModule:
     def __init__(self,initPage:str = None):
         configLoader = ConfigLoader()
         self.url=configLoader.getUrl()
@@ -28,12 +29,14 @@ class webTestModule:
         passwordTextField.send_keys(password)
         loginButton=self.driver.find_element_by_xpath("//input[@value='login']")
         loginButton.click()
+        return HomePage(self)
+
     def logout(self):
         self.driver.find_element_by_id('logoutNav').click()
     def close(self):
         self.driver.quit()
 @pytest.fixture
 def webTestInst():
-    webTestInst=webTestModule()
+    webTestInst=WebTestModule()
     yield webTestInst
     webTestInst.close()
