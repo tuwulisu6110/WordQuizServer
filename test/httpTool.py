@@ -10,5 +10,5 @@ def sendHTTPPost(url: str,payload: dict[str,str]):
     req.add_header('Content-Type', 'application/json; charset=utf-8')
     response = urllib.request.urlopen(req,context=myssl)
     return response
-def getPayload(httpResponse):
+def getPayload(httpResponse)->dict[str,str]:
     return json.loads(httpResponse.read().decode('utf-8'))
